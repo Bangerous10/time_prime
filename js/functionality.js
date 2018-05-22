@@ -147,6 +147,7 @@ $(document).ready(function() {
 
         $(".logs .total_hours").html(total_hours);
       } else {
+        $(".logs .total_hours").html("0");
         $(".logs tbody").append('<tr><td colspan="6" class="center"><i>No Logs Found</i></td></tr>');
       }
 
@@ -374,6 +375,7 @@ $(document).ready(function() {
           });
           $(".logs .total_hours").html(total_hours);
         } else {
+          $(".logs .total_hours").html("0");
           $(".logs tbody").append('<tr><td colspan="6" class="center"><i>No Logs Found</i></td></tr>');
         }
 
@@ -393,7 +395,7 @@ $(document).ready(function() {
 
   // CSV Downlaod ==========================================================================================
   $(document).on("click", ".csv", function() {
-    var csv_string = "data:text/csv;charset=utf-8, \nlog ID,Date,User ID,User Name,Project,Job Code,Description,Hours\n";
+    var csv_string = "data:text/csv;charset=utf-8, \nDate,User Name,Project,Job Code,Description,Hours\n";
 
     if (current_logs.length > 0) {
       $.each(current_logs, function(i) {
