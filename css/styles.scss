@@ -1,0 +1,257 @@
+@charset "UTF-8";
+
+// Color
+@import "components/color-variables";
+@import "components/color-classes";
+
+// Variables;
+@import "components/variables";
+
+// Reset
+@import "components/normalize";
+
+// components
+@import "components/global";
+//@import "components/badges";
+//@import "components/icons-material-design";
+@import "components/grid";
+@import "components/navbar";
+@import "components/typography";
+@import "components/transitions";
+@import "components/cards";
+@import "components/toast";
+@import "components/tabs";
+@import "components/tooltip";
+@import "components/buttons";
+@import "components/dropdown";
+@import "components/waves";
+@import "components/modal";
+@import "components/collapsible";
+//@import "components/chips";
+@import "components/materialbox";
+@import "components/forms/forms";
+@import "components/table_of_contents";
+//@import "components/sidenav";
+@import "components/preloader";
+//@import "components/slider";
+//@import "components/carousel";
+@import "components/tapTarget";
+@import "components/pulse";
+@import "components/datepicker";
+@import "components/timepicker";
+
+// Custom Styles ===========================================================================================
+// Variables & Constants ===================================================================================
+@import url('https://fonts.googleapis.com/css?family=Bree+Serif|Open+Sans:400,600,700');
+* {font-family: 'Open Sans', sans-serif;}
+h1, h2, h3, h4, h5, h6 {font-family:'Bree Serif', sans-serif;}
+.max-width {max-width:1200px;margin:0 auto;}
+.row {margin-bottom:0;}
+$red: #EE3524;
+$pink: rgb(255, 232, 232);
+$input-text: rgb(60, 60, 60);
+
+
+// Header / Nav ============================================================================================
+nav {
+  z-index:10;
+  width:100%;
+  top:0;
+  padding:1rem 0;
+  background-color:black;
+  height:auto;
+  .nav-wrapper {
+    .user_info {
+      position:absolute;
+      top:0;
+      right:1rem;
+      & > div {display:inline-block;}
+      .user_image {
+        height:50px;
+        width:50px;
+        border-radius:50%;
+        background-position:center;
+        background-size:cover;
+        background-repeat:no-repeat;
+      }
+      .user_image, .user_name, .user_id {
+        font-size:0.9rem;
+        line-height:2rem;
+        vertical-align:text-bottom;
+      }
+    }
+    .brand-logo {position:relative;display:block;}
+    ul {
+      li {
+        text-transform:uppercase;
+        font-weight:900;
+        float:none;
+        display:inline-block;
+      }
+    }
+  }
+
+}
+
+// Add Log =================================================================================================
+main {
+  .add_log_container.col {
+    background-color:rgb(240,240,240);
+    padding:3rem 2rem;
+    box-shadow:0 0 30px -10px rgb(50,50,50);
+    .add_row {
+      background-color:white;
+      color:$red;
+      font-size:0.8rem;
+      font-weight:900;
+      margin-right:1rem;
+    }
+    .add_log {
+      margin:1rem 0;
+      position:relative;
+      .input-field { input, label, li span {font-size:0.8rem;}}
+      select.browser-default {
+        border-bottom:1px solid #9e9e9e;
+        background-color:transparent;
+        outline:none;
+      }
+      select {color:$input-text;font-size:0.8rem;}
+      input::placeholder {color:$input-text;}
+      input:-ms-input-placeholder {color:$input-text;}
+      input::-ms-input-placeholder {color:$input-text;}
+      .remove_row {
+        background-color:white;
+        color:$red;
+        margin:1.5rem auto 0 auto;
+        font-size:0.6rem;
+        font-weight:900;
+        transition:0.3s ease;
+        &:hover {background-color:black;}
+      }
+
+    }
+    #submit {
+      background-color:$primary-color;
+      color:white;
+      font-weight:900;
+    }
+  }
+  
+  // Project Lists =========================================================================================
+  .flex-container {
+    padding:3rem 1rem;
+    display:flex;
+    flex-flow:row nowrap;
+    justify-content:center;
+    align-items:stretch;
+    overflow:hidden;
+    .projects {
+      width:45%;
+      .toggle {
+        background-color:white;
+        font-size:0.6rem;
+        color:$red;
+        width:80px;
+        margin:0 0.5rem;
+        font-weight:900;
+        &.active {background-color:black;}
+      }
+      .projects_archived {display:none;}
+      .input-field.col {
+        padding:0;
+        .search {font-size:2rem;}
+      }
+      .project {
+        padding:0.5rem 0;
+        cursor:pointer;
+        position:relative;
+        &.bookmarked::before {
+          content:'\f08d';
+          font-family:'FontAwesome';
+          position:absolute;
+          top:0.5rem;
+          right:0.5rem;
+          color:$red;
+          background-color:transparent;
+        }
+      }
+    }
+    .logs {
+      width:55%;
+      .project_logs {
+        .csv {
+          font-size:0.8rem;
+          font-weight:900;
+          background-color:rgb(240,240,240);
+          color:$red;
+          &:hover {background-color:black;}
+        }
+        .delete_log, .edit_log {
+          cursor:pointer;
+          transition:0.3s ease;
+          vertical-align:middle;
+        }
+        .delete_log {
+          color:$red;
+          height:20px;
+          width:20px;
+          &:hover {color: darken($red, 10%)}}
+        .edit_log {
+          background-color:#0288d1;
+          color:white;
+          border-radius:3px;
+          margin-right:0.5rem;
+          height:17px;
+          width:17px;
+          &:hover {background-color: darken(#0288d1, 10%)}}
+      }
+    }
+  }
+}
+
+// Modals ==================================================================================================
+.modal {
+  width:70%;
+  max-height:90%;
+  outline:none;
+  &.datepicker-modal {
+    .btn, .btn-flat {
+      color:$red;
+      background-color:transparent;
+    }
+  }
+  .modal-footer {
+    height:auto;
+    padding:1rem 1rem 1.5rem 1rem;
+  }
+  .btn-flat, .btn {
+    background-color:$red;
+    color:white;
+    font-weight:900;
+  }
+
+  &#report_modal {
+    select[multiple] {
+      min-height:300px;
+      &::-webkit-scrollbar {
+      	width: 8px;
+      	background-color: white;
+      }
+      &::-webkit-scrollbar-thumb {
+      	background-color: rgb(150,150,150);
+      }
+    }
+  }
+}
+
+// Footer ==================================================================================================
+footer.page-footer {
+  background-color:black;
+  a {color:$red;}
+  .footer-copyright {
+    padding:2rem 1rem;
+    display:block;
+  }
+}
+
+@import "mobile";

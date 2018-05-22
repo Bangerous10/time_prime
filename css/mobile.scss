@@ -1,0 +1,20 @@
+@media #{$small-and-down} {
+
+}
+@media #{$medium-and-up} {
+  // styles for medium screens and larger
+}
+@media #{$medium-and-down} {
+  main .flex-container {
+    flex-flow:row wrap;
+    .projects, .logs {
+      width:100%;
+    }
+  }
+}
+@media #{$large-and-up} {
+  // styles for large screens and up
+}
+@media #{$extra-large-and-up} {
+  // styles for extra large screens and up
+}
