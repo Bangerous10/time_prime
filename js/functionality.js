@@ -1,4 +1,5 @@
 $(document).ready(function() {
+
   // Log Gathered Basecamp Data ============================================================================
   // console.log(all_users);
   // console.log(profile);
@@ -101,7 +102,7 @@ $(document).ready(function() {
     $("#report_modal #report_user").append(option);
   });
 
-// View a Project's Logs =================================================================================
+  // View a Project's Logs =================================================================================
   function populateLogs(log) {
     current_logs.push(log);
 
@@ -426,7 +427,6 @@ $(document).ready(function() {
       window.location.replace("index.php");
     });
   });
-
 
 
 

@@ -6046,6 +6046,37 @@ h1, h2, h3, h4, h5, h6 {
 .row {
   margin-bottom: 0; }
 
+.load-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 100;
+  background-color: #f0f0f0; }
+  .load-overlay > div {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center; }
+    .load-overlay > div svg {
+      height: 150px;
+      width: 150px;
+      position: absolute;
+      overflow: visible; }
+      .load-overlay > div svg.bg {
+        transform: translateY(40px);
+        opacity: 0; }
+        .load-overlay > div svg.bg polygon {
+          fill: #EE3524; }
+      .load-overlay > div svg.fg {
+        height: 100px;
+        width: 100px; }
+        .load-overlay > div svg.fg polygon {
+          fill: transparent;
+          stroke: white;
+          stroke-width: 1px; }
+
 nav {
   z-index: 10;
   width: 100%;
@@ -6165,25 +6196,27 @@ main .flex-container {
       color: #EE3524; }
       main .flex-container .logs .project_logs .csv:hover {
         background-color: black; }
-    main .flex-container .logs .project_logs .delete_log, main .flex-container .logs .project_logs .edit_log {
-      cursor: pointer;
-      transition: 0.3s ease;
-      vertical-align: middle; }
-    main .flex-container .logs .project_logs .delete_log {
-      color: #EE3524;
-      height: 20px;
-      width: 20px; }
-      main .flex-container .logs .project_logs .delete_log:hover {
-        color: #cf2010; }
-    main .flex-container .logs .project_logs .edit_log {
-      background-color: #0288d1;
-      color: white;
-      border-radius: 3px;
-      margin-right: 0.5rem;
-      height: 17px;
-      width: 17px; }
-      main .flex-container .logs .project_logs .edit_log:hover {
-        background-color: #02679e; }
+    main .flex-container .logs .project_logs tbody tr {
+      transition: 0.3s ease-out; }
+      main .flex-container .logs .project_logs tbody tr .delete_log, main .flex-container .logs .project_logs tbody tr .edit_log {
+        cursor: pointer;
+        transition: 0.3s ease;
+        vertical-align: middle; }
+      main .flex-container .logs .project_logs tbody tr .delete_log {
+        color: #EE3524;
+        height: 20px;
+        width: 20px; }
+        main .flex-container .logs .project_logs tbody tr .delete_log:hover {
+          color: #cf2010; }
+      main .flex-container .logs .project_logs tbody tr .edit_log {
+        background-color: #0288d1;
+        color: white;
+        border-radius: 3px;
+        margin-right: 0.5rem;
+        height: 17px;
+        width: 17px; }
+        main .flex-container .logs .project_logs tbody tr .edit_log:hover {
+          background-color: #02679e; }
 
 .modal {
   width: 70%;

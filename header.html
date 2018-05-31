@@ -4,11 +4,11 @@
   <title>JS Time Tracker</title>
   <link rel="shortcut icon" href="images/icon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script type="text/javascript" src="https://unpkg.com/jso/dist/jso.js"></script>
   <script src="js/jquery-3.3.1.min.js"></script>
   <script src="js/pouchdb-6.4.3.min.js"></script>
   <script src="js/pouchdb.find.js"></script>
   <script src="js/materialize/bin/materialize.min.js"></script>
+  <script src="js/anime.min.js"></script>
   <script src="js/job_codes.js"></script>
   <script src="js/functionality.js"></script>
   <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js"
@@ -18,3 +18,54 @@
   <link type="text/css" rel="stylesheet" href="css/styles.css"  media="screen,projection"/>
 
 </head>
+<div class="load-overlay">
+  <div>
+    <svg viewBox="0 0 100 100" class="bg">
+      <polygon points="39,33 8.5,83.9 50,57 91.5,83.9 62,35 50,14.8 "/>
+    </svg>
+    <svg viewBox="0 0 100 100" class="fg">
+      <polygon points="9.5,17.5 51.5,17.5 51.5,28.5 37.5,28.5 37.5,69.5 78.5,69.5 78.5,61.5 90.5,61.5 90.5,82.5 9.5,82.5   9.5,70.5 21.5,70.5 21.5,28.5 9.5,28.5 "/>
+    </svg>
+  </div>
+</div>
+<script>
+var lineDrawing = anime.timeline();
+lineDrawing
+.add({
+  targets: '.load-overlay .bg',
+  translateY: [40, '-=40px'],
+  opacity:1,
+  duration: 1500,
+  easing: 'easeOutBack'
+})
+.add({
+  targets: '.load-overlay .bg polygon',
+  points: '8.5,1 8.5,83.9 50,99 91.5,83.9 91.5,1 50,14.8',
+  duration: 600,
+  easing: 'easeOutBack'
+})
+.add({
+  targets: '.load-overlay .fg polygon',
+  strokeDashoffset: [anime.setDashoffset, 0],
+  easing: 'easeInOutSine',
+  direction: 'alternate',
+  duration: 2000,
+})
+.add({
+  targets: '.load-overlay .fg polygon',
+  fill: '#fff',
+  easing: 'easeInOutSine',
+  duration: 500,
+  offset: '+=500'
+})
+.add({
+  targets: '.load-overlay',
+  opacity: 0,
+  easing: 'linear',
+  duration: 500,
+  offset: '+=1000',
+  complete: function(anim) {
+    $(".load-overlay").hide()
+  }
+});
+</script>

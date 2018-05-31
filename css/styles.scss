@@ -48,9 +48,48 @@ h1, h2, h3, h4, h5, h6 {font-family:'Bree Serif', sans-serif;}
 .max-width {max-width:1200px;margin:0 auto;}
 .row {margin-bottom:0;}
 $red: #EE3524;
-$pink: rgb(255, 232, 232);
 $input-text: rgb(60, 60, 60);
+$gray: #f0f0f0;
 
+// Preloader Overlay =======================================================================================
+.load-overlay {
+  position:fixed;
+  top:0;
+  left:0;
+  height:100%;
+  width:100%;
+  z-index:100;
+  background-color:$gray;
+  & > div {
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    svg {
+      height:150px;
+      width:150px;
+      position:absolute;
+      overflow:visible;
+      &.bg {
+        transform: translateY(40px);
+        opacity:0;
+        polygon {
+          fill:$red;
+        }
+      }
+      &.fg {
+        height:100px;
+        width:100px;
+        polygon {
+          fill:transparent;
+          stroke:white;
+          stroke-width:1px;
+        }
+      }
+    }
+  }
+
+}
 
 // Header / Nav ============================================================================================
 nav {
@@ -96,7 +135,7 @@ nav {
 // Add Log =================================================================================================
 main {
   .add_log_container.col {
-    background-color:rgb(240,240,240);
+    background-color:$gray;
     padding:3rem 2rem;
     box-shadow:0 0 30px -10px rgb(50,50,50);
     .add_row {
@@ -136,7 +175,7 @@ main {
       font-weight:900;
     }
   }
-  
+
   // Project Lists =========================================================================================
   .flex-container {
     padding:3rem 1rem;
@@ -182,28 +221,33 @@ main {
         .csv {
           font-size:0.8rem;
           font-weight:900;
-          background-color:rgb(240,240,240);
+          background-color:$gray;
           color:$red;
           &:hover {background-color:black;}
         }
-        .delete_log, .edit_log {
-          cursor:pointer;
-          transition:0.3s ease;
-          vertical-align:middle;
+        tbody tr {
+          transition:0.3s ease-out;
+          .delete_log, .edit_log {
+            cursor:pointer;
+            transition:0.3s ease;
+            vertical-align:middle;
+          }
+          .delete_log {
+            color:$red;
+            height:20px;
+            width:20px;
+            &:hover {color: darken($red, 10%)}
+          }
+          .edit_log {
+            background-color:#0288d1;
+            color:white;
+            border-radius:3px;
+            margin-right:0.5rem;
+            height:17px;
+            width:17px;
+            &:hover {background-color: darken(#0288d1, 10%)}
+          }
         }
-        .delete_log {
-          color:$red;
-          height:20px;
-          width:20px;
-          &:hover {color: darken($red, 10%)}}
-        .edit_log {
-          background-color:#0288d1;
-          color:white;
-          border-radius:3px;
-          margin-right:0.5rem;
-          height:17px;
-          width:17px;
-          &:hover {background-color: darken(#0288d1, 10%)}}
       }
     }
   }
