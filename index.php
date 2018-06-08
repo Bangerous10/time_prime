@@ -2,7 +2,7 @@
 require('header.html');
 require('authorize.php');
 ?>
-
+<script src="js/functionality.js"></script>
 <script>
 <?php
 // Gather Basecamp Data ====================================================================================

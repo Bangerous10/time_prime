@@ -147,6 +147,7 @@ $(document).ready(function() {
         });
 
         $(".logs .total_hours").html(total_hours);
+        $(".project_logs table").after("<a href='data_chart.php' class='view-charts waves btn-flat'>More Info</a>");
       } else {
         $(".logs .total_hours").html("0");
         $(".logs tbody").append('<tr><td colspan="6" class="center"><i>No Logs Found</i></td></tr>');
@@ -417,7 +418,13 @@ $(document).ready(function() {
 
   });
 
-  // SIGNOUT ===============================================================================================
+  // Store Data for Charts =================================================================================
+  $(document).on("click", ".view-charts", function() {
+    var project = $(".logs .project_name").text();
+    localStorage.setItem("project",project);
+  });
+
+  // Signout ===============================================================================================
   $(document).on("click", ".signout", function() {
     $.get("sign_out.php")
     .fail(function() {

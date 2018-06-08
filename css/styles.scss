@@ -288,6 +288,48 @@ main {
   }
 }
 
+// Charts ==================================================================================================
+.charts {
+  .back {
+    position:fixed;
+    font-size:1.5rem;
+    cursor:pointer;
+    transition:0.3s ease;
+    .fa-chevron-left {
+      color:$red;
+      opacity:0;
+      transition:0.3s ease;
+      vertical-align:middle;
+    }
+    .title {
+      font-size:1.5rem;
+      display:inline-block;
+      margin:0;
+      padding-left:0.5rem;
+    }
+    &:hover {
+      .fa-chevron-left {opacity:1;}
+      padding-left:1rem;
+    }
+  }
+  & > .row:nth-child(even) {background-color:$gray;box-shadow:0 0 30px -10px rgb(50,50,50);}
+  .charts_row_container {
+    padding:5rem 3rem;
+    max-height:800px;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    align-content:center;
+    .info {
+      text-align:left;
+      .project, .total_hours {
+        color:$red;
+        font-weight:900;
+      }
+    }
+  }
+}
+
 // Footer ==================================================================================================
 footer.page-footer {
   background-color:black;
