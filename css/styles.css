@@ -6036,7 +6036,7 @@ input[type=range].focused:focus:not(.active)::-ms-thumb {
 * {
   font-family: 'Open Sans', sans-serif; }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, .title {
   font-family: 'Bree Serif', sans-serif; }
 
 .max-width {
@@ -6045,6 +6045,18 @@ h1, h2, h3, h4, h5, h6 {
 
 .row {
   margin-bottom: 0; }
+
+.project-icon, main .view-container .projects .project::after {
+  font-family: 'FontAwesome';
+  position: absolute;
+  height: 100%;
+  width: 50px;
+  line-height: 65px;
+  font-size: 1.5rem;
+  color: #EE3524;
+  text-align: center;
+  top: 0;
+  right: 0; }
 
 .load-overlay {
   position: fixed;
@@ -6151,72 +6163,130 @@ main .add_log_container.col {
     background-color: #EE3524;
     color: white;
     font-weight: 900; }
-main .flex-container {
+main .view-container {
   padding: 3rem 1rem;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-  align-items: stretch;
-  overflow: hidden; }
-  main .flex-container .projects {
-    width: 45%; }
-    main .flex-container .projects .toggle {
-      background-color: white;
-      font-size: 0.6rem;
+  overflow: hidden;
+  position: relative;
+  min-height: 500px; }
+  main .view-container .projects, main .view-container .logs {
+    width: 100%;
+    display: inline-block;
+    white-space: nowrap;
+    vertical-align: top;
+    transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1); }
+  main .view-container .projects .title {
+    padding: 0 1.5rem; }
+    main .view-container .projects .title .toggle {
+      font-size: 1rem;
+      position: relative;
+      text-align: center;
       color: #EE3524;
-      width: 80px;
-      margin: 0 0.5rem;
-      font-weight: 900; }
-      main .flex-container .projects .toggle.active {
-        background-color: black; }
-    main .flex-container .projects .projects_archived {
-      display: none; }
-    main .flex-container .projects .input-field.col {
-      padding: 0; }
-      main .flex-container .projects .input-field.col .search {
-        font-size: 2rem; }
-    main .flex-container .projects .project {
-      padding: 0.5rem 0;
+      margin: 0 1rem;
       cursor: pointer;
-      position: relative; }
-      main .flex-container .projects .project.bookmarked::before {
-        content: '\f08d';
-        font-family: 'FontAwesome';
+      font-weight: 900; }
+      main .view-container .projects .title .toggle::after {
+        content: '';
         position: absolute;
-        top: 0.5rem;
-        right: 0.5rem;
+        width: 0;
+        height: 1px;
+        background-color: black;
+        bottom: 0;
+        left: 0;
+        transition: 0.3s ease-out; }
+      main .view-container .projects .title .toggle.active::after {
+        width: 100%; }
+    main .view-container .projects .title .display_list, main .view-container .projects .title .display_blocks {
+      margin: 0 1rem;
+      cursor: pointer;
+      font-size: 1.5rem;
+      vertical-align: middle;
+      color: #EE3524; }
+  main .view-container .projects .input-field.col {
+    padding: 0 1rem;
+    float: none; }
+    main .view-container .projects .input-field.col label {
+      left: 1rem; }
+    main .view-container .projects .input-field.col .search {
+      font-size: 2rem; }
+  main .view-container .projects .project {
+    padding: 0 1rem;
+    width: 100%;
+    float: left;
+    margin: 0;
+    cursor: pointer;
+    position: relative; }
+    main .view-container .projects .project p {
+      margin-top: 0; }
+    main .view-container .projects .project.archived {
+      display: none; }
+    main .view-container .projects .project.bookmarked::after {
+      content: '\f08d'; }
+    main .view-container .projects .project.archived::after {
+      content: '\f187'; }
+    main .view-container .projects .project.grid {
+      width: calc((100% - 4rem) / 2);
+      padding: 0.5rem 60px 0.5rem 1rem;
+      margin: 1rem;
+      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2); }
+      main .view-container .projects .project.grid p {
+        margin-top: 1em; }
+      main .view-container .projects .project.grid::after {
+        line-height: 90px; }
+      main .view-container .projects .project.grid.bookmarked::after {
+        content: '\f08d';
+        color: white;
+        background-color: #EE3524; }
+      main .view-container .projects .project.grid.archived::after {
+        content: '\f187';
         color: #EE3524;
-        background-color: transparent; }
-  main .flex-container .logs {
-    width: 55%; }
-    main .flex-container .logs .project_logs .csv {
+        background-color: #f0f0f0; }
+  main .view-container .logs {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    padding: 3rem 1rem; }
+    main .view-container .logs .title {
+      font-size: 1.5rem; }
+      main .view-container .logs .title .project_name {
+        font: 500 2rem 'Bree Serif'; }
+      main .view-container .logs .title .left, main .view-container .logs .title .right {
+        cursor: pointer; }
+        main .view-container .logs .title .left svg, main .view-container .logs .title .right svg {
+          color: #EE3524;
+          vertical-align: middle;
+          margin: 1rem; }
+    main .view-container .logs .project_logs .csv {
       font-size: 0.8rem;
       font-weight: 900;
       background-color: #f0f0f0;
       color: #EE3524; }
-      main .flex-container .logs .project_logs .csv:hover {
+      main .view-container .logs .project_logs .csv:hover {
         background-color: black; }
-    main .flex-container .logs .project_logs tbody tr {
+    main .view-container .logs .project_logs tbody tr {
       transition: 0.3s ease-out; }
-      main .flex-container .logs .project_logs tbody tr .delete_log, main .flex-container .logs .project_logs tbody tr .edit_log {
+      main .view-container .logs .project_logs tbody tr .delete_log, main .view-container .logs .project_logs tbody tr .edit_log {
         cursor: pointer;
         transition: 0.3s ease;
         vertical-align: middle; }
-      main .flex-container .logs .project_logs tbody tr .delete_log {
+      main .view-container .logs .project_logs tbody tr .delete_log {
         color: #EE3524;
         height: 20px;
         width: 20px; }
-        main .flex-container .logs .project_logs tbody tr .delete_log:hover {
+        main .view-container .logs .project_logs tbody tr .delete_log:hover {
           color: #cf2010; }
-      main .flex-container .logs .project_logs tbody tr .edit_log {
+      main .view-container .logs .project_logs tbody tr .edit_log {
         background-color: #0288d1;
         color: white;
         border-radius: 3px;
         margin-right: 0.5rem;
         height: 17px;
         width: 17px; }
-        main .flex-container .logs .project_logs tbody tr .edit_log:hover {
+        main .view-container .logs .project_logs tbody tr .edit_log:hover {
           background-color: #02679e; }
+  main .view-container.view_logs .projects, main .view-container.view_logs .logs {
+    transform: translateX(-100%); }
+  main .view-container.view_projects .projects, main .view-container.view_projects .logs {
+    transform: translateX(0); }
 
 .modal {
   width: 70%;
@@ -6248,7 +6318,8 @@ main .flex-container {
   .charts .back .fa-chevron-left {
     color: #EE3524;
     opacity: 0;
-    transition: 0.3s ease; }
+    transition: 0.3s ease;
+    vertical-align: middle; }
   .charts .back .title {
     font-size: 1.5rem;
     display: inline-block;

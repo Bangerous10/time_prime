@@ -31,33 +31,29 @@ $client->CallAPI(
 $profile = json_encode($responseID);
 echo "var profile = " . $profile . ";";
 
-// Get All Active Projects
-$active_projects = array();
+$projects = array();
+// Get All Projects
 for ($x = 1; $x <= 5; $x++) {
   $client->CallAPI(
     "{$url}/projects.json?page=$x",
     'GET', array(), array('FailOnAccessError'=>true), $active_project);
   foreach($active_project as $active_project) {
-    $active_projects[$active_project->name] = $active_project;
+    $projects[$active_project->name] = $active_project;
   }
 }
-ksort($active_projects);
-$active_projects = json_encode($active_projects);
-echo "var active_projects = " . $active_projects . ";";
 
-// Get All Archived Projects
-$archived_projects = array();
 for ($x = 1; $x <= 5; $x++) {
   $client->CallAPI(
     "{$url}/projects.json?status=archived&page=$x",
     'GET', array(), array('FailOnAccessError'=>true), $archived_project);
   foreach($archived_project as $archived_project) {
-    $archived_projects[$archived_project->name] = $archived_project;
+    $projects[$archived_project->name] = $archived_project;
   }
 }
-ksort($archived_projects);
-$archived_projects = json_encode($archived_projects);
-echo "var archived_projects = " . $archived_projects . ";";
+
+ksort($projects);
+$projects = json_encode($projects);
+echo "var all_projects = " . $projects . ";";
 ?>
 </script>
 <body>
@@ -121,46 +117,54 @@ echo "var archived_projects = " . $archived_projects . ";";
         </div>
       </div>
     </div>
-    <div class="row flex-container max-width">
+    <div class="row view-container view_projects">
       <!-- Project List -->
       <div class="projects">
         <div class="max-width">
-          <h4>
+          <h4 class="title">
             View Projects
-            <button class="btn waves-effect right toggle toggle_active active">Active</button>
-            <button class="btn waves-effect right toggle toggle_archived">Archived</button>
+            <span class="right toggle toggle_active active">Active</span>
+            <span class="right toggle toggle_archived">Archived</span>
+            <span class="right" style="font-size:1.5rem;margin:0 1rem;">/</span>
+            <span class="right display_list"><i class="fas fa-list"></i></span>
+            <span class="right display_blocks"><i class="fas fa-th-large"></i></span>
           </h4>
-          <div class="projects_archived col s12">
+          <div class="project_list col s12">
             <div class="input-field col s12">
-              <input id="search_archived" class="search" type="text">
-              <label for="search_archived">Search Achived Jobs</label>
-            </div>
-          </div>
-          <div class="projects_active col s12">
-            <div class="input-field col s12">
-              <input id="search_active" class="search" type="text">
-              <label for="search_active">Search Active Jobs</label>
+              <input id="search_projects" class="search" type="text">
+              <label for="search_projects">Search Projects</label>
             </div>
           </div>
         </div>
       </div>
       <!-- Logs List -->
       <div class="logs">
-        <h4 class="project_name center">View Logs</h4>
-        <div class="project_logs">
-          <table class="striped">
-            <thead>
-              <tr>
-                <th><a download="logs.csv" class="btn-flat waves-effect csv"><i class="far fa-arrow-alt-circle-down"></i> CSV</a></th>
-                <th>Date</th>
-                <th>User Name</th>
-                <th>Job Code</th>
-                <th>Description</th>
-                <th style="text-align:right">Hours: <span class="total_hours"></span></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+        <div class="max-width">
+          <h4 class="center title">
+            <span class="left">
+              <i class="fas fa-arrow-left reverse"></i>
+            </span>
+            <span class="project_name">View Logs</span>
+            <span class="right">
+              <a href="data_chart.php" class="view-charts"><i class="fas fa-chart-pie"></i></a>
+              <a download="logs.csv" class="csv"><i class="fas fa-download"></i></a>
+            </span>
+          </h4>
+          <div class="project_logs">
+            <table class="striped">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Date</th>
+                  <th>User Name</th>
+                  <th>Job Code</th>
+                  <th>Description</th>
+                  <th style="text-align:right">Hours: <span class="total_hours"></span></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
       </div>
 

@@ -44,12 +44,25 @@
 // Variables & Constants ===================================================================================
 @import url('https://fonts.googleapis.com/css?family=Bree+Serif|Open+Sans:400,600,700');
 * {font-family: 'Open Sans', sans-serif;}
-h1, h2, h3, h4, h5, h6 {font-family:'Bree Serif', sans-serif;}
+h1, h2, h3, h4, h5, h6, .title {font-family:'Bree Serif', sans-serif;}
 .max-width {max-width:1200px;margin:0 auto;}
 .row {margin-bottom:0;}
 $red: #EE3524;
 $input-text: rgb(60, 60, 60);
 $gray: #f0f0f0;
+
+.project-icon {
+  font-family: 'FontAwesome';
+  position:absolute;
+  height:100%;
+  width:50px;
+  line-height:65px;
+  font-size:1.5rem;
+  color:$red;
+  text-align:center;
+  top:0;
+  right:0;
+}
 
 // Preloader Overlay =======================================================================================
 .load-overlay {
@@ -88,7 +101,6 @@ $gray: #f0f0f0;
       }
     }
   }
-
 }
 
 // Header / Nav ============================================================================================
@@ -176,47 +188,108 @@ main {
     }
   }
 
-  // Project Lists =========================================================================================
-  .flex-container {
+  // Projects List =========================================================================================
+  .view-container {
     padding:3rem 1rem;
-    display:flex;
-    flex-flow:row nowrap;
-    justify-content:center;
-    align-items:stretch;
     overflow:hidden;
+    position:relative;
+    min-height:500px;
+    .projects, .logs {
+      width:100%;
+      display:inline-block;
+      white-space:nowrap;
+      vertical-align:top;
+      transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1);
+    }
     .projects {
-      width:45%;
-      .toggle {
-        background-color:white;
-        font-size:0.6rem;
-        color:$red;
-        width:80px;
-        margin:0 0.5rem;
-        font-weight:900;
-        &.active {background-color:black;}
+      .title {
+        padding:0 1.5rem;
+        .toggle {
+          font-size:1rem;
+          position:relative;
+          text-align:center;
+          color:$red;
+          margin:0 1rem;
+          cursor:pointer;
+          font-weight:900;
+          &::after {
+            content:'';
+            position:absolute;
+            width:0;
+            height:1px;
+            background-color:black;
+            bottom:0;
+            left:0;
+            transition:0.3s ease-out;
+          }
+          &.active::after {width:100%;}
+        }
+        .display_list, .display_blocks {
+          margin:0 1rem;
+          cursor:pointer;
+          font-size:1.5rem;
+          vertical-align:middle;
+          color:$red;
+        }
       }
-      .projects_archived {display:none;}
       .input-field.col {
-        padding:0;
+        padding:0 1rem;
+        float:none;
+        label {left:1rem;}
         .search {font-size:2rem;}
       }
       .project {
-        padding:0.5rem 0;
+        padding:0 1rem;
+        width:100%;
+        float:left;
+        margin:0;
         cursor:pointer;
         position:relative;
-        &.bookmarked::before {
-          content:'\f08d';
-          font-family:'FontAwesome';
-          position:absolute;
-          top:0.5rem;
-          right:0.5rem;
-          color:$red;
-          background-color:transparent;
+        p {margin-top:0;}
+        &.archived {display:none;}
+        &.bookmarked::after {content:'\f08d';}
+        &.archived::after {content:'\f187';}
+        &::after {
+          @extend .project-icon;
+        }
+        &.grid {
+          width:calc((100% - 4rem) / 2);
+          padding:0.5rem 60px 0.5rem 1rem;
+          margin:1rem;
+          box-shadow:0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+          p {margin-top:1em;}// browser default
+          &::after {line-height:90px;}
+          &.bookmarked::after {
+            content: '\f08d';
+            color:white;
+            background-color:$red;
+          }
+          &.archived::after {
+            content: '\f187';
+            color:$red;
+            background-color:$gray;
+          }
         }
       }
     }
+    // Logs List ===========================================================================================
     .logs {
-      width:55%;
+      position:absolute;
+      top:0;
+      left:100%;
+      padding:3rem 1rem;
+      .title {
+        font-size:1.5rem;
+        .project_name {font:500 2rem 'Bree Serif';}
+        .left, .right {
+          cursor:pointer;
+          svg {
+            color:$red;
+            vertical-align:middle;
+            margin:1rem;
+          }
+        }
+      }
       .project_logs {
         .csv {
           font-size:0.8rem;
@@ -248,6 +321,16 @@ main {
             &:hover {background-color: darken(#0288d1, 10%)}
           }
         }
+      }
+    }
+    &.view_logs {
+      .projects, .logs {
+        transform:translateX(-100%);
+      }
+    }
+    &.view_projects {
+      .projects, .logs {
+        transform:translateX(0);
       }
     }
   }

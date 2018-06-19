@@ -18,7 +18,7 @@ require('authorize.php');
       <div class="info col s12 m6">
         <p>
           Here is a collection of the hours users contributed to <span class="project"></span>. This is all-time contributions,
-          not specific to any timeframe. In total users have contributed <span class="total_hours"></span> hours to this job.
+          not specific to any timeframe. In total, users have contributed <span class="total_hours"></span> hours to this job.
         </p>
       </div>
       <div class="chart col s12 m6">

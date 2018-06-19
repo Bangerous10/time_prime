@@ -10,6 +10,7 @@ $(document).ready(function() {
 
   $(".project").html(project);
 
+
   db.createIndex({
     index: {
       fields: ['date', 'project'],
@@ -46,9 +47,9 @@ $(document).ready(function() {
 
     // Sum Total Hours
     var total_hours = Object.values(users).reduce(function(acc, val) { return acc + val; });
-    $(".total_hours").html(total_hours);
+    $(".total_hours").html(total_hours.toFixed(2));
 
-    // Bar Chart
+    // Pie Chart
     var pie = $("#pie-chart");
     var myChart = new Chart(pie, {
       type: 'doughnut',
@@ -57,10 +58,9 @@ $(document).ready(function() {
         datasets: [{
           label: 'Contributor',
           data: Object.values(users),
-          backgroundColor: 'rgba(0,0,0,0)',
-          borderColor: colors,
-          borderWidth: 3,
-          hoverBorderColor: 'rgb(238, 53, 36)'
+          backgroundColor: colors,
+          borderColor: 'white',
+          borderWidth: 1,
         }]
       }
     });
@@ -103,8 +103,6 @@ $(document).ready(function() {
   });
 
 $("canvas").height("200px").width("200px").css("display", "inline-block");
-console.log(users);
-console.log(dates);
 
 
 
