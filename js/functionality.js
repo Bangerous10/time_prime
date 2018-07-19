@@ -33,10 +33,10 @@ $(document).ready(function() {
   // Display & Populate Projects ===========================================================================
   // Active
   $.each(all_projects, function(i) {
+    all_projects[i].name = all_projects[i].name.replace(/['"]+/g, '');
     var create_date = new Date(this.created_at);
     $(".projects .project_list").append('<div class="project grid"><h6 class="name">' + this.name + '</h6><p>Created: ' + months[create_date.getMonth()] + '/' + create_date.getDate() + '/' + create_date.getFullYear() + '</p></div>');
-
-
+    $(".projects .project_list .project:last-child").append('<div class="icon"><i class="fas fa-archive"></i><i class="fas fa-thumbtack"></i></div>');
 
     if (this.status == 'archived') {
       $(".projects .project_list .project:last-child").addClass('archived');
@@ -48,12 +48,9 @@ $(document).ready(function() {
 
     $(".project.bookmarked").insertAfter(".projects .project_list .input-field");
 
-    if (this.status == 'active') {
       var option = '<option value="' + this.name + '">' + this.name + '</option>';
       $(".add_log .project").append(option);
-      $("#edit_modal #edit_project").append(option);
       $("#report_modal #report_project").append(option);
-    }
   });
 
   // Show/Hide Project Lists and Format
@@ -123,28 +120,42 @@ $(document).ready(function() {
   });
 
   // View a Project's Logs =================================================================================
-  function populateLogs(log) {
-    current_logs.push(log);
+  var populate_logs = function populate_logs(logs) {
+    current_logs = [];
+    var total_hours = 0;
+    if (logs.length > 0) {
+      $.each(logs, function(i) {
+        current_logs.push(this);
 
-    $(".logs table tbody").append('<tr data-id="' + log._id + '" data-rev="' + log._rev + '"></tr>');
+        $(".logs table tbody").append('<tr data-id="' + this._id + '" data-rev="' + this._rev + '"></tr>');
 
-    var date = new Date(log.date);
-    var dateString = months[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear();
+        var date = new Date(this.date);
+        var dateString = months[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear();
 
-    var row = $(".logs table tbody tr:last-child");
-    row.append('<td class="center"><i class="fas fa-pen-square edit_log"></i><i class="far fa-minus-square delete_log"></i></td>');
-    row.append('<td>' + dateString + '</td>');
-    row.append('<td>' + log.user_name + '</td>');
-    row.append('<td>' + log.job_code + '</td>');
-    row.append('<td style="max-width:300px">' + log.description + '</td>');
-    row.append('<td style="text-align:right">' + log.hours + '</td>');
-  }
+        var row = $(".logs table tbody tr:last-child");
+        row.append('<td class="center"><i class="fas fa-pen-square edit_log"></i><i class="far fa-minus-square delete_log"></i></td>');
+        row.append('<td>' + dateString + '</td>');
+        row.append('<td>' + this.user_name + '</td>');
+        row.append('<td>' + this.project + '</td>');
+        row.append('<td>' + this.job_code + '</td>');
+        row.append('<td class="truncate" style="max-width:300px">' + this.description + '</td>');
+        row.append('<td style="text-align:right">' + this.hours + '</td>');
+        total_hours += parseFloat(this.hours);
+      });
+
+      $(".logs .total_hours").html(total_hours.toFixed(2));
+    } else {
+      $(".logs .total_hours").html("0");
+      $(".logs tbody").append('<tr><td colspan="7" class="center"><i>No Logs Found</i></td></tr>');
+    }
+
+    $(".view-container").css("min-height", $(".view-container .logs").outerHeight());
+  };
 
   $(document).on("click", ".projects .project", function() {
     var project_name = $(this).find(".name").text();
     $(".logs .project_name").html(project_name);
     $(".logs table tbody").html('');
-    var total_hours = 0;
 
     if ($(this).hasClass("active")) {
       $(".add_log select.project option[value='" + project_name + "']").prop('selected', true);
@@ -165,21 +176,8 @@ $(document).ready(function() {
         sort: [{date: 'desc'}],
       })
     }).then(function(docs) {
-      current_logs = [];
-      if (docs.docs.length > 0) {
-        $.each(docs.docs, function(i) {
-          populateLogs(this);
-          total_hours += parseFloat(this.hours);
-        });
-
-        $(".logs .total_hours").html(total_hours.toFixed(2));
-      } else {
-        $(".logs .total_hours").html("0");
-        $(".logs tbody").append('<tr><td colspan="6" class="center"><i>No Logs Found</i></td></tr>');
-      }
-
+      populate_logs(docs.docs);
       $(".view-charts").show();
-      $(".view-container").css("min-height", $(".view-container .logs").outerHeight());
     }).catch(function (err) {
       console.log(err);
     });
@@ -296,7 +294,7 @@ $(document).ready(function() {
         defaultDate: new Date(doc.date),
         setDefaultDate: true
       });
-      $("#edit_modal #edit_project").val(doc.project);
+      $("#edit_modal #edit_project").val(doc.project); // Must get Project from doc
       $("#edit_modal #edit_job_code").val(doc.job_code);
       $("#edit_modal #edit_description").val(doc.description);
       $("#edit_modal #edit_hours").val(doc.hours);
@@ -311,7 +309,7 @@ $(document).ready(function() {
     var edit = $("#edit_modal");
     var id = edit.find("#edit_log_id").val();
     var rev = edit.find("#edit_log_rev").val();
-    var user_id = edit.find("#edit_user_id").val();
+    var user_id = parseInt(edit.find("#edit_user_id").val());
     var user_name = edit.find("#edit_user_name").val();
     var dateString = edit.find("#edit_date").val();
     var date = new Date(dateString);
@@ -358,25 +356,14 @@ $(document).ready(function() {
 
     if (report.find("#report_project").val() == 'all') {
       $.each(all_projects, function(i) {
-        if (this.status == 'active') {
-          projects.push(this.name);
-        }
+        projects.push(this.name);
       });
     } else {
       projects = report.find("#report_project").val();
     }
 
-    if (report.find("#report_start_date").val() != '') {
-      var start_date = new Date(report.find("#report_start_date").val()).toISOString();
-    } else {
-      var start_date = null;
-    }
-
-    if (report.find("#report_end_date").val() != '') {
-      var end_date = new Date(report.find("#report_end_date").val()).toISOString();
-    } else {
-      var end_date = new Date().toISOString();
-    }
+    var start_date = (report.find("#report_start_date").val() != '') ? new Date(report.find("#report_start_date").val()).toISOString() : null;
+    var end_date = (report.find("#report_end_date").val() != '') ? new Date(report.find("#report_end_date").val()).toISOString() : new Date().toISOString();
 
     // If Users and Projects are chosen
     if (users.length > 0 && projects.length > 0) {
@@ -403,21 +390,7 @@ $(document).ready(function() {
           sort: [{'user_id': 'desc'}, {'project': 'desc'}, {'date': 'desc'}],
         });
       }).then(function(docs) {
-        current_logs = [];
-        if (docs.docs.length > 0) {
-          $.each(docs.docs, function(i) {
-            $(".logs .project_name").html('Log Report');
-
-            populateLogs(this);
-            total_hours += parseFloat(this.hours);
-
-          });
-          $(".logs .total_hours").html(total_hours.toFixed(2));
-        } else {
-          $(".logs .total_hours").html("0");
-          $(".logs tbody").append('<tr><td colspan="6" class="center"><i>No Logs Found</i></td></tr>');
-        }
-
+        populate_logs(docs.docs);
         $(".view-charts").hide();
       }).catch(function (err) {
         console.log(err);
@@ -443,7 +416,8 @@ $(document).ready(function() {
     if (current_logs.length > 0) {
       $.each(current_logs, function(i) {
         var job_code = (this.job_code != '' && this.job_code != null) ? this.job_code : ' ';
-        var description = (this.description != '' && this.description != null) ? this.description : ' ';
+        var description = (this.description != '' && this.description != null) ? this.description.toString() : ' ';
+        description = description.replace(/[, ]+/g, " ").trim();
         var date_long = new Date(this.date);
         var date = (date_long.getMonth()+1) + "/" + date_long.getDate() + "/" + date_long.getFullYear();
 
@@ -475,39 +449,5 @@ $(document).ready(function() {
       window.location.replace("index.php");
     });
   });
-
-  // var new_logs = [];
-  //
-  // $.each(old_logs, function(i) {
-  //
-  //   var user_id = this.user_id;
-  //   var user_name;
-  //
-  //   $.each(all_users, function(i) {
-  //     if (user_id == 11371617) {
-  //       user_name = 'Emma DePrez';
-  //     } else if (user_id == 11371618) {
-  //       user_name = 'Cole Farrell';
-  //     } else if (this.id == user_id) {
-  //       user_name = this.name;
-  //     }
-  //   });
-  //
-  //   var log = {
-  //     '_id': this.log_id,
-  //     'user_id': this.user_id,
-  //     'user_name': user_name,
-  //     'date': new Date(this.log_date).toISOString(),
-  //     'hours': this.hours,
-  //     'job_code': this.job_code,
-  //     'description': this.description,
-  //     'project': this.project_name
-  //   }
-  //   new_logs.push(log);
-  // });
-  //
-  // console.log(new_logs);
-  //
-  // db.bulkDocs(new_logs);
 
 });

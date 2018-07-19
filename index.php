@@ -157,6 +157,7 @@ echo "var all_projects = " . $projects . ";";
                   <th></th>
                   <th>Date</th>
                   <th>User Name</th>
+                  <th>Project</th>
                   <th>Job Code</th>
                   <th>Description</th>
                   <th style="text-align:right">Hours: <span class="total_hours"></span></th>
@@ -182,7 +183,7 @@ echo "var all_projects = " . $projects . ";";
             <label for="edit_user_name">User Name</label>
           </div>
           <div class="input-field col s6">
-            <input disabled id="edit_user_id" type="text">
+            <input disabled id="edit_user_id" type="number">
             <label for="edit_user_id">User Id</label>
           </div>
         </div>
@@ -194,9 +195,8 @@ echo "var all_projects = " . $projects . ";";
         </div>
         <div class="row">
           <div class="input-field col s12">
-            <select id="edit_project" class="browser-default">
-              <option value="" disabled selected>Project Name*</option>
-            </select>
+            <input disabled id="edit_project" type="text">
+            <label for="edit_project">Project</label>
           </div>
         </div>
         <div class="row">

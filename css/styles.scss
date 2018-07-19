@@ -38,6 +38,7 @@
 @import "components/tapTarget";
 @import "components/pulse";
 @import "components/datepicker";
+
 @import "components/timepicker";
 
 // Custom Styles ===========================================================================================
@@ -52,7 +53,7 @@ $input-text: rgb(60, 60, 60);
 $gray: #f0f0f0;
 
 .project-icon {
-  font-family: 'FontAwesome';
+  font-family: FontAwesome;
   position:absolute;
   height:100%;
   width:50px;
@@ -148,7 +149,7 @@ nav {
 main {
   .add_log_container.col {
     background-color:$gray;
-    padding:3rem 2rem;
+    padding:3rem;
     box-shadow:0 0 30px -10px rgb(50,50,50);
     .add_row {
       background-color:white;
@@ -246,26 +247,28 @@ main {
         cursor:pointer;
         position:relative;
         p {margin-top:0;}
-        &.archived {display:none;}
-        &.bookmarked::after {content:'\f08d';}
-        &.archived::after {content:'\f187';}
-        &::after {
+        &.archived {
+          display:none;
+          .icon .fa-thumbtack {display:none;}
+        }
+        &.bookmarked .icon .fa-archive {display:none;}
+        .icon {
+          display:none;
           @extend .project-icon;
         }
+        &.bookmarked .icon, &.archived .icon {display:block;}
         &.grid {
           width:calc((100% - 4rem) / 2);
           padding:0.5rem 60px 0.5rem 1rem;
           margin:1rem;
           box-shadow:0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
           p {margin-top:1em;}// browser default
-          &::after {line-height:90px;}
-          &.bookmarked::after {
-            content: '\f08d';
+          .icon {line-height:90px;}
+          &.bookmarked .icon {
             color:white;
             background-color:$red;
           }
-          &.archived::after {
-            content: '\f187';
+          &.archived .icon {
             color:$red;
             background-color:$gray;
           }
