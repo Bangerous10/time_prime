@@ -32,7 +32,7 @@
 @import "components/forms/forms";
 @import "components/table_of_contents";
 //@import "components/sidenav";
-@import "components/preloader";
+//@import "components/preloader";
 //@import "components/slider";
 //@import "components/carousel";
 @import "components/tapTarget";
@@ -45,12 +45,12 @@
 // Variables & Constants ===================================================================================
 @import url('https://fonts.googleapis.com/css?family=Bree+Serif|Open+Sans:400,600,700');
 * {font-family: 'Open Sans', sans-serif;}
-h1, h2, h3, h4, h5, h6, .title {font-family:'Bree Serif', sans-serif;}
+h1, h2, h3, h4, h5, h6, .title {font-family:'Bree Serif', sans-serif;line-height:115%;}
 .max-width {max-width:1200px;margin:0 auto;}
 .row {margin-bottom:0;}
-$red: #EE3524;
 $input-text: rgb(60, 60, 60);
 $gray: #f0f0f0;
+$box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
 
 .project-icon {
   font-family: FontAwesome;
@@ -59,7 +59,7 @@ $gray: #f0f0f0;
   width:50px;
   line-height:65px;
   font-size:1.5rem;
-  color:$red;
+  color:$primary-color;
   text-align:center;
   top:0;
   right:0;
@@ -88,7 +88,7 @@ $gray: #f0f0f0;
         transform: translateY(40px);
         opacity:0;
         polygon {
-          fill:$red;
+          fill:$primary-color;
         }
       }
       &.fg {
@@ -126,7 +126,7 @@ nav {
         background-size:cover;
         background-repeat:no-repeat;
       }
-      .user_image, .user_name, .user_id {
+      .user_image, .user_name, .user_company {
         font-size:0.9rem;
         line-height:2rem;
         vertical-align:text-bottom;
@@ -139,10 +139,26 @@ nav {
         font-weight:900;
         float:none;
         display:inline-block;
+        a {
+          line-height:2rem;
+          margin:0 15px;
+          padding:0;
+          position:relative;
+          &:after {
+            content:'';
+            position:absolute;
+            width:0;
+            height:1px;
+            background-color:$primary-color;
+            bottom:0;
+            left:0;
+            transition:0.7s cubic-bezier(0.645, 0.045, 0.355, 1);
+          }
+          &:hover:after {width:100%;}
+        }
       }
     }
   }
-
 }
 
 // Add Log =================================================================================================
@@ -151,47 +167,41 @@ main {
     background-color:$gray;
     padding:3rem;
     box-shadow:0 0 30px -10px rgb(50,50,50);
-    .add_row {
-      background-color:white;
-      color:$red;
-      font-size:0.8rem;
-      font-weight:900;
-      margin-right:1rem;
-    }
     .add_log {
-      margin:1rem 0;
+      padding:0;
       position:relative;
       .input-field { input, label, li span {font-size:0.8rem;}}
       select.browser-default {
         border-bottom:1px solid #9e9e9e;
         background-color:transparent;
         outline:none;
+        padding:0;
       }
       select {color:$input-text;font-size:0.8rem;}
       input::placeholder {color:$input-text;}
       input:-ms-input-placeholder {color:$input-text;}
       input::-ms-input-placeholder {color:$input-text;}
       .remove_row {
-        background-color:white;
-        color:$red;
+        background-color:$gray;
+        color:$primary-color;
         margin:1.5rem auto 0 auto;
-        font-size:0.6rem;
         font-weight:900;
         transition:0.3s ease;
-        &:hover {background-color:black;}
+        &:hover {background-color:white;}
       }
-
     }
-    #submit {
-      background-color:$primary-color;
+    .add_row, .submit {
       color:white;
+      background-color:$primary-color;
+      font-size:0.8rem;
       font-weight:900;
     }
+    .add_row {margin-right:1rem;}
   }
 
   // Projects List =========================================================================================
   .view-container {
-    padding:3rem 1rem;
+    padding:3rem;
     overflow:hidden;
     position:relative;
     min-height:500px;
@@ -200,77 +210,69 @@ main {
       display:inline-block;
       white-space:nowrap;
       vertical-align:top;
-      transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1);
+      transition: transform 0.7s cubic-bezier(0.165, 0.84, 0.44, 1); //EaseOutQuart
     }
     .projects {
       .title {
-        padding:0 1.5rem;
         .toggle {
-          font-size:1rem;
-          position:relative;
-          text-align:center;
-          color:$red;
-          margin:0 1rem;
+          display:flex;
+          align-items:center;
+          align-content:center;
+          border-radius:50%;
+          padding:8px;
+          margin:0 0.5rem;
+          color:$primary-color;
+          transition:0.3s ease;
           cursor:pointer;
-          font-weight:900;
-          &::after {
-            content:'';
-            position:absolute;
-            width:0;
-            height:1px;
-            background-color:black;
-            bottom:0;
-            left:0;
-            transition:0.3s ease-out;
-          }
-          &.active::after {width:100%;}
-        }
-        .display_list, .display_blocks {
-          margin:0 1rem;
-          cursor:pointer;
-          font-size:1.5rem;
-          vertical-align:middle;
-          color:$red;
-        }
-      }
-      .input-field.col {
-        padding:0 1rem;
-        float:none;
-        label {left:1rem;}
-        .search {font-size:2rem;}
-      }
-      .project {
-        padding:0 1rem;
-        width:100%;
-        float:left;
-        margin:0;
-        cursor:pointer;
-        position:relative;
-        p {margin-top:0;}
-        &.archived {
-          display:none;
-          .icon .fa-thumbtack {display:none;}
-        }
-        &.bookmarked .icon .fa-archive {display:none;}
-        .icon {
-          display:none;
-          @extend .project-icon;
-        }
-        &.bookmarked .icon, &.archived .icon {display:block;}
-        &.grid {
-          width:calc((100% - 4rem) / 2);
-          padding:0.5rem 60px 0.5rem 1rem;
-          margin:1rem;
-          box-shadow:0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
-          p {margin-top:1em;}// browser default
-          .icon {line-height:90px;}
-          &.bookmarked .icon {
-            color:white;
-            background-color:$red;
-          }
-          &.archived .icon {
-            color:$red;
+          svg {height:20px;width:20px;}
+          &.active {
+            color:$primary-color;
             background-color:$gray;
+            box-shadow:$box-shadow;
+          }
+        }
+      }
+      .project_list {
+        padding:0;
+        .input-field.col {
+          padding:0;
+          float:none;
+          label {left:0;}
+          .search {font-size:2rem;}
+        }
+        .project {
+          padding:0 1rem;
+          width:100%;
+          float:left;
+          margin:0;
+          cursor:pointer;
+          position:relative;
+          p {margin-top:0;}
+          &.archived {
+            display:none;
+            .icon .fa-thumbtack {display:none;}
+          }
+          &.bookmarked .icon .fa-archive {display:none;}
+          .icon {
+            display:none;
+            @extend .project-icon;
+          }
+          &.bookmarked .icon, &.archived .icon {display:block;}
+          &.grid {
+            width:calc((100% - 3rem) / 3);
+            padding:0.5rem 60px 0.5rem 1rem;
+            margin:0.5rem;
+            box-shadow:$box-shadow;
+            p {margin-top:1em;}// browser default
+            .icon {line-height:90px;}
+            &.bookmarked .icon {
+              color:white;
+              background-color:$primary-color;
+            }
+            &.archived .icon {
+              color:$primary-color;
+              background-color:$gray;
+            }
           }
         }
       }
@@ -280,17 +282,17 @@ main {
       position:absolute;
       top:0;
       left:100%;
-      padding:3rem 1rem;
+      padding:inherit;
       .title {
-        font-size:1.5rem;
-        .project_name {font:500 2rem 'Bree Serif';}
+        .project_name {font-family:'Bree Serif';}
         .left, .right {
+          display:flex;
+          align-items:center;
+          align-content:center;
+          margin:0.7rem 8px;
+          color:$primary-color;
           cursor:pointer;
-          svg {
-            color:$red;
-            vertical-align:middle;
-            margin:1rem;
-          }
+          svg {height:20px;width:20px;}
         }
       }
       .project_logs {
@@ -298,7 +300,7 @@ main {
           font-size:0.8rem;
           font-weight:900;
           background-color:$gray;
-          color:$red;
+          color:$primary-color;
           &:hover {background-color:black;}
         }
         tbody tr {
@@ -309,10 +311,10 @@ main {
             vertical-align:middle;
           }
           .delete_log {
-            color:$red;
+            color:$primary-color;
             height:20px;
             width:20px;
-            &:hover {color: darken($red, 10%)}
+            &:hover {color: darken($primary-color, 10%)}
           }
           .edit_log {
             background-color:#0288d1;
@@ -327,9 +329,8 @@ main {
       }
     }
     &.view_logs {
-      .projects, .logs {
-        transform:translateX(-100%);
-      }
+      .projects {transform:translateX(-110%);}
+      .logs {transform:translateX(-100%);}
     }
     &.view_projects {
       .projects, .logs {
@@ -346,7 +347,7 @@ main {
   outline:none;
   &.datepicker-modal {
     .btn, .btn-flat {
-      color:$red;
+      color:$primary-color;
       background-color:transparent;
     }
   }
@@ -355,8 +356,9 @@ main {
     padding:1rem 1rem 1.5rem 1rem;
   }
   .btn-flat, .btn {
-    background-color:$red;
+    background-color:$primary-color;
     color:white;
+    font-size:0.8rem;
     font-weight:900;
   }
 
@@ -371,6 +373,9 @@ main {
       	background-color: rgb(150,150,150);
       }
     }
+    .input-field {
+      small {color:#9e9e9e;}
+    }
   }
 }
 
@@ -382,7 +387,7 @@ main {
     cursor:pointer;
     transition:0.3s ease;
     .fa-chevron-left {
-      color:$red;
+      color:$primary-color;
       opacity:0;
       transition:0.3s ease;
       vertical-align:middle;
@@ -409,7 +414,7 @@ main {
     .info {
       text-align:left;
       .project, .total_hours {
-        color:$red;
+        color:$primary-color;
         font-weight:900;
       }
     }
@@ -419,7 +424,7 @@ main {
 // Footer ==================================================================================================
 footer.page-footer {
   background-color:black;
-  a {color:$red;}
+  a {color:$primary-color;}
   .footer-copyright {
     padding:2rem 1rem;
     display:block;

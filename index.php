@@ -64,7 +64,7 @@ echo "var all_projects = " . $projects . ";";
         <div class="user_image"></div>
         <div>
           <div class="user_name"></div>
-          <div class="user_id"></div>
+          <div class="user_company"></div>
         </div>
       </div>
       <div class="brand-logo"><a href="index.php"><img src="images/brand.png" alt="LODGE" style="width:275px;"/></a></div>
@@ -81,16 +81,14 @@ echo "var all_projects = " . $projects . ";";
       <!-- Add Log -->
       <div class="add_log_container col s12">
         <div class="max-width">
-          <h4>
-            Add Log(s)
-            <button class="btn waves-effect right" id="submit"><i class="fas fa-check"></i> Submit</button>
-            <button class="btn waves-effect right add_row"><i class="fas fa-plus"></i> Add Row</button>
+          <h4 class="title">
+            Add Logs
           </h4>
           <div class="add_logs">
             <div class="add_log col s12">
               <div class="col s12 m1 center">
                 <button class="btn-flat waves-effect remove_row col s12">
-                  Remove
+                  <i class="fas fa-trash"></i>
                 </button>
               </div>
               <div class="input-field col s12 m2">
@@ -114,6 +112,8 @@ echo "var all_projects = " . $projects . ";";
               </div>
             </div>
           </div>
+          <button class="btn-flat waves-effect waves-light right submit"><i class="fas fa-check"></i> Submit</button>
+          <button class="btn-flat waves-effect waves-light right add_row"><i class="fas fa-plus"></i> Add Row</button>
         </div>
       </div>
     </div>
@@ -123,11 +123,8 @@ echo "var all_projects = " . $projects . ";";
         <div class="max-width">
           <h4 class="title">
             View Projects
-            <span class="right toggle toggle_active active">Active</span>
-            <span class="right toggle toggle_archived">Archived</span>
-            <span class="right" style="font-size:1.5rem;margin:0 1rem;">/</span>
-            <span class="right display_list"><i class="fas fa-list"></i></span>
-            <span class="right display_blocks"><i class="fas fa-th-large"></i></span>
+            <span class="right toggle archive_toggle"><i class="fas fa-archive"></i></span>
+            <span class="right toggle grid_toggle active"><i class="fas fa-th-large"></i></span>
           </h4>
           <div class="project_list col s12">
             <div class="input-field col s12">
@@ -145,13 +142,11 @@ echo "var all_projects = " . $projects . ";";
               <i class="fas fa-arrow-left reverse"></i>
             </span>
             <span class="project_name">View Logs</span>
-            <span class="right">
-              <a href="data_chart.php" class="view-charts"><i class="fas fa-chart-pie"></i></a>
-              <a download="logs.csv" class="csv"><i class="fas fa-download"></i></a>
-            </span>
+              <a href="data_chart.php" class="view-charts right"><i class="fas fa-chart-pie"></i></a>
+              <a download="logs.csv" class="csv right"><i class="fas fa-download"></i></a>
           </h4>
           <div class="project_logs">
-            <table class="striped">
+            <table class="responsive-table">
               <thead>
                 <tr>
                   <th></th>
@@ -243,14 +238,14 @@ echo "var all_projects = " . $projects . ";";
         </div>
         <div class="row">
           <div class="input-field col s12 m6">
-            <i class="far fa-calendar-alt prefix"></i>
             <input type="text" id="report_start_date" class="datepicker">
             <label for="report_start_date">Start Date</label>
+            <small>*If none selected, will contain all logs before end date</small>
           </div>
           <div class="input-field col s12 m6">
-            <i class="far fa-calendar-alt prefix"></i>
             <input type="text" id="report_end_date" class="datepicker">
             <label for="report_end_date">End Date</label>
+            <small>*If none selected, will use current date</small>
           </div>
         </div>
 

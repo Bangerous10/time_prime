@@ -1,20 +1,59 @@
-@media #{$small-and-down} {
+// 601px or more
+@media #{$medium-and-up} {
 
 }
-@media #{$medium-and-up} {
-  // styles for medium screens and larger
+
+// 993px or more
+@media #{$large-and-up} {
+
 }
+
+// 1200px or more
+@media #{$extra-large-and-up} {
+  // styles for extra large screens and up
+}
+
+// 992px or less
 @media #{$medium-and-down} {
-  main .flex-container {
-    flex-flow:row wrap;
-    .projects, .logs {
-      width:100%;
+  main {
+    .view-container {
+      .projects {
+        .project_list {
+          .project.grid {width:calc((100% - 2rem) / 2);}
+        }
+      }
     }
   }
 }
-@media #{$large-and-up} {
-  // styles for large screens and up
-}
-@media #{$extra-large-and-up} {
-  // styles for extra large screens and up
+
+// 600px or less
+@media #{$small-and-down} {
+  .title {font-size:2rem;}
+  main {
+    .add_log_container.col {padding:1.5rem;}
+    .view-container {
+      padding:1.5rem;
+      .projects, .logs {
+        width:100%;
+      }
+      .projects {
+        .project_list {
+          .project {
+            padding:0;
+            &.grid {
+              width:100%;
+              margin:0.5rem 0;
+            }
+          }
+        }
+      }
+      .logs {
+        .title {
+          font-size:1.5rem;
+          .right, .left {margin-top:0;}
+        }
+      }
+    }
+    .modal {width:90%;}
+  }
 }

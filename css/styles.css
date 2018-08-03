@@ -6625,481 +6625,6 @@ input[type=range].focused:focus:not(.active)::-ms-thumb {
   border-left: 2px solid #EE3524;
 }
 
-/*
-    @license
-    Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
-    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-    Code distributed by Google as part of the polymer project is also
-    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
- */
-/**************************/
-/* STYLES FOR THE SPINNER */
-/**************************/
-/*
- * Constants:
- *      STROKEWIDTH = 3px
- *      ARCSIZE     = 270 degrees (amount of circle the arc takes up)
- *      ARCTIME     = 1333ms (time it takes to expand and contract arc)
- *      ARCSTARTROT = 216 degrees (how much the start location of the arc
- *                                should rotate each time, 216 gives us a
- *                                5 pointed star shape (it's 360/5 * 3).
- *                                For a 7 pointed star, we might do
- *                                360/7 * 3 = 154.286)
- *      CONTAINERWIDTH = 28px
- *      SHRINK_TIME = 400ms
- */
-.preloader-wrapper {
-  display: inline-block;
-  position: relative;
-  width: 50px;
-  height: 50px;
-}
-.preloader-wrapper.small {
-  width: 36px;
-  height: 36px;
-}
-.preloader-wrapper.big {
-  width: 64px;
-  height: 64px;
-}
-.preloader-wrapper.active {
-  /* duration: 360 * ARCTIME / (ARCSTARTROT + (360-ARCSIZE)) */
-  -webkit-animation: container-rotate 1568ms linear infinite;
-  animation: container-rotate 1568ms linear infinite;
-}
-
-@-webkit-keyframes container-rotate {
-  to {
-    -webkit-transform: rotate(360deg);
-  }
-}
-@keyframes container-rotate {
-  to {
-    transform: rotate(360deg);
-  }
-}
-.spinner-layer {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  border-color: #EE3524;
-}
-
-.spinner-blue,
-.spinner-blue-only {
-  border-color: #4285f4;
-}
-
-.spinner-red,
-.spinner-red-only {
-  border-color: #db4437;
-}
-
-.spinner-yellow,
-.spinner-yellow-only {
-  border-color: #f4b400;
-}
-
-.spinner-green,
-.spinner-green-only {
-  border-color: #0f9d58;
-}
-
-/**
- * IMPORTANT NOTE ABOUT CSS ANIMATION PROPERTIES (keanulee):
- *
- * iOS Safari (tested on iOS 8.1) does not handle animation-delay very well - it doesn't
- * guarantee that the animation will start _exactly_ after that value. So we avoid using
- * animation-delay and instead set custom keyframes for each color (as redundant as it
- * seems).
- *
- * We write out each animation in full (instead of separating animation-name,
- * animation-duration, etc.) because under the polyfill, Safari does not recognize those
- * specific properties properly, treats them as -webkit-animation, and overrides the
- * other animation rules. See https://github.com/Polymer/platform/issues/53.
- */
-.active .spinner-layer.spinner-blue {
-  /* durations: 4 * ARCTIME */
-  -webkit-animation: fill-unfill-rotate 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both, blue-fade-in-out 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-  animation: fill-unfill-rotate 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both, blue-fade-in-out 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-}
-
-.active .spinner-layer.spinner-red {
-  /* durations: 4 * ARCTIME */
-  -webkit-animation: fill-unfill-rotate 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both, red-fade-in-out 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-  animation: fill-unfill-rotate 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both, red-fade-in-out 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-}
-
-.active .spinner-layer.spinner-yellow {
-  /* durations: 4 * ARCTIME */
-  -webkit-animation: fill-unfill-rotate 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both, yellow-fade-in-out 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-  animation: fill-unfill-rotate 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both, yellow-fade-in-out 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-}
-
-.active .spinner-layer.spinner-green {
-  /* durations: 4 * ARCTIME */
-  -webkit-animation: fill-unfill-rotate 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both, green-fade-in-out 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-  animation: fill-unfill-rotate 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both, green-fade-in-out 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-}
-
-.active .spinner-layer,
-.active .spinner-layer.spinner-blue-only,
-.active .spinner-layer.spinner-red-only,
-.active .spinner-layer.spinner-yellow-only,
-.active .spinner-layer.spinner-green-only {
-  /* durations: 4 * ARCTIME */
-  opacity: 1;
-  -webkit-animation: fill-unfill-rotate 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-  animation: fill-unfill-rotate 5332ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-}
-
-@-webkit-keyframes fill-unfill-rotate {
-  12.5% {
-    -webkit-transform: rotate(135deg);
-  }
-  /* 0.5 * ARCSIZE */
-  25% {
-    -webkit-transform: rotate(270deg);
-  }
-  /* 1   * ARCSIZE */
-  37.5% {
-    -webkit-transform: rotate(405deg);
-  }
-  /* 1.5 * ARCSIZE */
-  50% {
-    -webkit-transform: rotate(540deg);
-  }
-  /* 2   * ARCSIZE */
-  62.5% {
-    -webkit-transform: rotate(675deg);
-  }
-  /* 2.5 * ARCSIZE */
-  75% {
-    -webkit-transform: rotate(810deg);
-  }
-  /* 3   * ARCSIZE */
-  87.5% {
-    -webkit-transform: rotate(945deg);
-  }
-  /* 3.5 * ARCSIZE */
-  to {
-    -webkit-transform: rotate(1080deg);
-  }
-  /* 4   * ARCSIZE */
-}
-@keyframes fill-unfill-rotate {
-  12.5% {
-    transform: rotate(135deg);
-  }
-  /* 0.5 * ARCSIZE */
-  25% {
-    transform: rotate(270deg);
-  }
-  /* 1   * ARCSIZE */
-  37.5% {
-    transform: rotate(405deg);
-  }
-  /* 1.5 * ARCSIZE */
-  50% {
-    transform: rotate(540deg);
-  }
-  /* 2   * ARCSIZE */
-  62.5% {
-    transform: rotate(675deg);
-  }
-  /* 2.5 * ARCSIZE */
-  75% {
-    transform: rotate(810deg);
-  }
-  /* 3   * ARCSIZE */
-  87.5% {
-    transform: rotate(945deg);
-  }
-  /* 3.5 * ARCSIZE */
-  to {
-    transform: rotate(1080deg);
-  }
-  /* 4   * ARCSIZE */
-}
-@-webkit-keyframes blue-fade-in-out {
-  from {
-    opacity: 1;
-  }
-  25% {
-    opacity: 1;
-  }
-  26% {
-    opacity: 0;
-  }
-  89% {
-    opacity: 0;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@keyframes blue-fade-in-out {
-  from {
-    opacity: 1;
-  }
-  25% {
-    opacity: 1;
-  }
-  26% {
-    opacity: 0;
-  }
-  89% {
-    opacity: 0;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@-webkit-keyframes red-fade-in-out {
-  from {
-    opacity: 0;
-  }
-  15% {
-    opacity: 0;
-  }
-  25% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 1;
-  }
-  51% {
-    opacity: 0;
-  }
-}
-@keyframes red-fade-in-out {
-  from {
-    opacity: 0;
-  }
-  15% {
-    opacity: 0;
-  }
-  25% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 1;
-  }
-  51% {
-    opacity: 0;
-  }
-}
-@-webkit-keyframes yellow-fade-in-out {
-  from {
-    opacity: 0;
-  }
-  40% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  75% {
-    opacity: 1;
-  }
-  76% {
-    opacity: 0;
-  }
-}
-@keyframes yellow-fade-in-out {
-  from {
-    opacity: 0;
-  }
-  40% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  75% {
-    opacity: 1;
-  }
-  76% {
-    opacity: 0;
-  }
-}
-@-webkit-keyframes green-fade-in-out {
-  from {
-    opacity: 0;
-  }
-  65% {
-    opacity: 0;
-  }
-  75% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-@keyframes green-fade-in-out {
-  from {
-    opacity: 0;
-  }
-  65% {
-    opacity: 0;
-  }
-  75% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-/**
- * Patch the gap that appear between the two adjacent div.circle-clipper while the
- * spinner is rotating (appears on Chrome 38, Safari 7.1, and IE 11).
- */
-.gap-patch {
-  position: absolute;
-  top: 0;
-  left: 45%;
-  width: 10%;
-  height: 100%;
-  overflow: hidden;
-  border-color: inherit;
-}
-
-.gap-patch .circle {
-  width: 1000%;
-  left: -450%;
-}
-
-.circle-clipper {
-  display: inline-block;
-  position: relative;
-  width: 50%;
-  height: 100%;
-  overflow: hidden;
-  border-color: inherit;
-}
-.circle-clipper .circle {
-  width: 200%;
-  height: 100%;
-  border-width: 3px;
-  /* STROKEWIDTH */
-  border-style: solid;
-  border-color: inherit;
-  border-bottom-color: transparent !important;
-  border-radius: 50%;
-  -webkit-animation: none;
-  animation: none;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-}
-.circle-clipper.left .circle {
-  left: 0;
-  border-right-color: transparent !important;
-  -webkit-transform: rotate(129deg);
-  transform: rotate(129deg);
-}
-.circle-clipper.right .circle {
-  left: -100%;
-  border-left-color: transparent !important;
-  -webkit-transform: rotate(-129deg);
-  transform: rotate(-129deg);
-}
-
-.active .circle-clipper.left .circle {
-  /* duration: ARCTIME */
-  -webkit-animation: left-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-  animation: left-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-}
-
-.active .circle-clipper.right .circle {
-  /* duration: ARCTIME */
-  -webkit-animation: right-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-  animation: right-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
-}
-
-@-webkit-keyframes left-spin {
-  from {
-    -webkit-transform: rotate(130deg);
-  }
-  50% {
-    -webkit-transform: rotate(-5deg);
-  }
-  to {
-    -webkit-transform: rotate(130deg);
-  }
-}
-@keyframes left-spin {
-  from {
-    transform: rotate(130deg);
-  }
-  50% {
-    transform: rotate(-5deg);
-  }
-  to {
-    transform: rotate(130deg);
-  }
-}
-@-webkit-keyframes right-spin {
-  from {
-    -webkit-transform: rotate(-130deg);
-  }
-  50% {
-    -webkit-transform: rotate(5deg);
-  }
-  to {
-    -webkit-transform: rotate(-130deg);
-  }
-}
-@keyframes right-spin {
-  from {
-    transform: rotate(-130deg);
-  }
-  50% {
-    transform: rotate(5deg);
-  }
-  to {
-    transform: rotate(-130deg);
-  }
-}
-#spinnerContainer.cooldown {
-  /* duration: SHRINK_TIME */
-  -webkit-animation: container-rotate 1568ms linear infinite, fade-out 400ms cubic-bezier(0.4, 0, 0.2, 1);
-  animation: container-rotate 1568ms linear infinite, fade-out 400ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@-webkit-keyframes fade-out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-@keyframes fade-out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
 .tap-target-wrapper {
   width: 800px;
   height: 800px;
@@ -7573,6 +7098,7 @@ input[type=range].focused:focus:not(.active)::-ms-thumb {
 
 h1, h2, h3, h4, h5, h6, .title {
   font-family: "Bree Serif", sans-serif;
+  line-height: 115%;
 }
 
 .max-width {
@@ -7584,7 +7110,7 @@ h1, h2, h3, h4, h5, h6, .title {
   margin-bottom: 0;
 }
 
-.project-icon, main .view-container .projects .project .icon {
+.project-icon, main .view-container .projects .project_list .project .icon {
   font-family: FontAwesome;
   position: absolute;
   height: 100%;
@@ -7659,7 +7185,7 @@ nav .nav-wrapper .user_info .user_image {
   background-size: cover;
   background-repeat: no-repeat;
 }
-nav .nav-wrapper .user_info .user_image, nav .nav-wrapper .user_info .user_name, nav .nav-wrapper .user_info .user_id {
+nav .nav-wrapper .user_info .user_image, nav .nav-wrapper .user_info .user_name, nav .nav-wrapper .user_info .user_company {
   font-size: 0.9rem;
   line-height: 2rem;
   vertical-align: text-bottom;
@@ -7674,21 +7200,33 @@ nav .nav-wrapper ul li {
   float: none;
   display: inline-block;
 }
+nav .nav-wrapper ul li a {
+  line-height: 2rem;
+  margin: 0 15px;
+  padding: 0;
+  position: relative;
+}
+nav .nav-wrapper ul li a:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 1px;
+  background-color: #EE3524;
+  bottom: 0;
+  left: 0;
+  transition: 0.7s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+nav .nav-wrapper ul li a:hover:after {
+  width: 100%;
+}
 
 main .add_log_container.col {
   background-color: #f0f0f0;
   padding: 3rem;
   box-shadow: 0 0 30px -10px #323232;
 }
-main .add_log_container.col .add_row {
-  background-color: white;
-  color: #EE3524;
-  font-size: 0.8rem;
-  font-weight: 900;
-  margin-right: 1rem;
-}
 main .add_log_container.col .add_log {
-  margin: 1rem 0;
+  padding: 0;
   position: relative;
 }
 main .add_log_container.col .add_log .input-field input, main .add_log_container.col .add_log .input-field label, main .add_log_container.col .add_log .input-field li span {
@@ -7698,6 +7236,7 @@ main .add_log_container.col .add_log select.browser-default {
   border-bottom: 1px solid #9e9e9e;
   background-color: transparent;
   outline: none;
+  padding: 0;
 }
 main .add_log_container.col .add_log select {
   color: #3c3c3c;
@@ -7713,23 +7252,26 @@ main .add_log_container.col .add_log input::-ms-input-placeholder {
   color: #3c3c3c;
 }
 main .add_log_container.col .add_log .remove_row {
-  background-color: white;
+  background-color: #f0f0f0;
   color: #EE3524;
   margin: 1.5rem auto 0 auto;
-  font-size: 0.6rem;
   font-weight: 900;
   transition: 0.3s ease;
 }
 main .add_log_container.col .add_log .remove_row:hover {
-  background-color: black;
+  background-color: white;
 }
-main .add_log_container.col #submit {
-  background-color: #EE3524;
+main .add_log_container.col .add_row, main .add_log_container.col .submit {
   color: white;
+  background-color: #EE3524;
+  font-size: 0.8rem;
   font-weight: 900;
 }
+main .add_log_container.col .add_row {
+  margin-right: 1rem;
+}
 main .view-container {
-  padding: 3rem 1rem;
+  padding: 3rem;
   overflow: hidden;
   position: relative;
   min-height: 500px;
@@ -7739,51 +7281,42 @@ main .view-container .projects, main .view-container .logs {
   display: inline-block;
   white-space: nowrap;
   vertical-align: top;
-  transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1);
-}
-main .view-container .projects .title {
-  padding: 0 1.5rem;
+  transition: transform 0.7s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 main .view-container .projects .title .toggle {
-  font-size: 1rem;
-  position: relative;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  border-radius: 50%;
+  padding: 8px;
+  margin: 0 0.5rem;
   color: #EE3524;
-  margin: 0 1rem;
+  transition: 0.3s ease;
   cursor: pointer;
-  font-weight: 900;
 }
-main .view-container .projects .title .toggle::after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 1px;
-  background-color: black;
-  bottom: 0;
-  left: 0;
-  transition: 0.3s ease-out;
+main .view-container .projects .title .toggle svg {
+  height: 20px;
+  width: 20px;
 }
-main .view-container .projects .title .toggle.active::after {
-  width: 100%;
-}
-main .view-container .projects .title .display_list, main .view-container .projects .title .display_blocks {
-  margin: 0 1rem;
-  cursor: pointer;
-  font-size: 1.5rem;
-  vertical-align: middle;
+main .view-container .projects .title .toggle.active {
   color: #EE3524;
+  background-color: #f0f0f0;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
 }
-main .view-container .projects .input-field.col {
-  padding: 0 1rem;
+main .view-container .projects .project_list {
+  padding: 0;
+}
+main .view-container .projects .project_list .input-field.col {
+  padding: 0;
   float: none;
 }
-main .view-container .projects .input-field.col label {
-  left: 1rem;
+main .view-container .projects .project_list .input-field.col label {
+  left: 0;
 }
-main .view-container .projects .input-field.col .search {
+main .view-container .projects .project_list .input-field.col .search {
   font-size: 2rem;
 }
-main .view-container .projects .project {
+main .view-container .projects .project_list .project {
   padding: 0 1rem;
   width: 100%;
   float: left;
@@ -7791,41 +7324,41 @@ main .view-container .projects .project {
   cursor: pointer;
   position: relative;
 }
-main .view-container .projects .project p {
+main .view-container .projects .project_list .project p {
   margin-top: 0;
 }
-main .view-container .projects .project.archived {
+main .view-container .projects .project_list .project.archived {
   display: none;
 }
-main .view-container .projects .project.archived .icon .fa-thumbtack {
+main .view-container .projects .project_list .project.archived .icon .fa-thumbtack {
   display: none;
 }
-main .view-container .projects .project.bookmarked .icon .fa-archive {
+main .view-container .projects .project_list .project.bookmarked .icon .fa-archive {
   display: none;
 }
-main .view-container .projects .project .icon {
+main .view-container .projects .project_list .project .icon {
   display: none;
 }
-main .view-container .projects .project.bookmarked .icon, main .view-container .projects .project.archived .icon {
+main .view-container .projects .project_list .project.bookmarked .icon, main .view-container .projects .project_list .project.archived .icon {
   display: block;
 }
-main .view-container .projects .project.grid {
-  width: calc((100% - 4rem) / 2);
+main .view-container .projects .project_list .project.grid {
+  width: calc((100% - 3rem) / 3);
   padding: 0.5rem 60px 0.5rem 1rem;
-  margin: 1rem;
+  margin: 0.5rem;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
 }
-main .view-container .projects .project.grid p {
+main .view-container .projects .project_list .project.grid p {
   margin-top: 1em;
 }
-main .view-container .projects .project.grid .icon {
+main .view-container .projects .project_list .project.grid .icon {
   line-height: 90px;
 }
-main .view-container .projects .project.grid.bookmarked .icon {
+main .view-container .projects .project_list .project.grid.bookmarked .icon {
   color: white;
   background-color: #EE3524;
 }
-main .view-container .projects .project.grid.archived .icon {
+main .view-container .projects .project_list .project.grid.archived .icon {
   color: #EE3524;
   background-color: #f0f0f0;
 }
@@ -7833,21 +7366,22 @@ main .view-container .logs {
   position: absolute;
   top: 0;
   left: 100%;
-  padding: 3rem 1rem;
-}
-main .view-container .logs .title {
-  font-size: 1.5rem;
+  padding: inherit;
 }
 main .view-container .logs .title .project_name {
-  font: 500 2rem "Bree Serif";
+  font-family: "Bree Serif";
 }
 main .view-container .logs .title .left, main .view-container .logs .title .right {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  margin: 0.7rem 8px;
+  color: #EE3524;
   cursor: pointer;
 }
 main .view-container .logs .title .left svg, main .view-container .logs .title .right svg {
-  color: #EE3524;
-  vertical-align: middle;
-  margin: 1rem;
+  height: 20px;
+  width: 20px;
 }
 main .view-container .logs .project_logs .csv {
   font-size: 0.8rem;
@@ -7885,7 +7419,10 @@ main .view-container .logs .project_logs tbody tr .edit_log {
 main .view-container .logs .project_logs tbody tr .edit_log:hover {
   background-color: #02679e;
 }
-main .view-container.view_logs .projects, main .view-container.view_logs .logs {
+main .view-container.view_logs .projects {
+  transform: translateX(-110%);
+}
+main .view-container.view_logs .logs {
   transform: translateX(-100%);
 }
 main .view-container.view_projects .projects, main .view-container.view_projects .logs {
@@ -7908,6 +7445,7 @@ main .view-container.view_projects .projects, main .view-container.view_projects
 .modal .btn-flat, .modal .btn, .modal .btn-large, .modal .btn-small {
   background-color: #EE3524;
   color: white;
+  font-size: 0.8rem;
   font-weight: 900;
 }
 .modal#report_modal select[multiple] {
@@ -7919,6 +7457,9 @@ main .view-container.view_projects .projects, main .view-container.view_projects
 }
 .modal#report_modal select[multiple]::-webkit-scrollbar-thumb {
   background-color: #969696;
+}
+.modal#report_modal .input-field small {
+  color: #9e9e9e;
 }
 
 .charts .back {
@@ -7977,11 +7518,39 @@ footer.page-footer .footer-copyright {
 }
 
 @media only screen and (max-width : 992px) {
-  main .flex-container {
-    flex-flow: row wrap;
+  main .view-container .projects .project_list .project.grid {
+    width: calc((100% - 2rem) / 2);
   }
-  main .flex-container .projects, main .flex-container .logs {
+}
+@media only screen and (max-width : 600px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  main .add_log_container.col {
+    padding: 1.5rem;
+  }
+  main .view-container {
+    padding: 1.5rem;
+  }
+  main .view-container .projects, main .view-container .logs {
     width: 100%;
+  }
+  main .view-container .projects .project_list .project {
+    padding: 0;
+  }
+  main .view-container .projects .project_list .project.grid {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+  main .view-container .logs .title {
+    font-size: 1.5rem;
+  }
+  main .view-container .logs .title .right, main .view-container .logs .title .left {
+    margin-top: 0;
+  }
+  main .modal {
+    width: 90%;
   }
 }
 

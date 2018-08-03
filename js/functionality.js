@@ -20,22 +20,24 @@ $(document).ready(function() {
   }
   initMaterialize();
 
+  var company_name = profile.company.name;
+  var company_id = profile.company.id;
+  var company_db = company_name.replace(/[^A-Z0-9]+/ig, "_").toLowerCase();
   var months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
   var current_logs = [];
 
-  var db = new PouchDB("https://e8f911a8-d248-4368-a746-cebad35bb583-bluemix:8ed78811bfba110ac8fe4a5f5bf339ca98291f864d695a2daee5b9f1da96fe83@e8f911a8-d248-4368-a746-cebad35bb583-bluemix.cloudant.com/time_logs");
+  var db = new PouchDB("https://e8f911a8-d248-4368-a746-cebad35bb583-bluemix:8ed78811bfba110ac8fe4a5f5bf339ca98291f864d695a2daee5b9f1da96fe83@e8f911a8-d248-4368-a746-cebad35bb583-bluemix.cloudant.com/" + company_db);
 
   // Display User Info =====================================================================================
   $(".user_image").css("background-image", "url(" + profile.avatar_url + ")");
   $(".user_name").html(profile.name);
-  $(".user_id").html(profile.id);
+  $(".user_company").html(company_name);
 
   // Display & Populate Projects ===========================================================================
-  // Active
   $.each(all_projects, function(i) {
     all_projects[i].name = all_projects[i].name.replace(/['"]+/g, '');
     var create_date = new Date(this.created_at);
-    $(".projects .project_list").append('<div class="project grid"><h6 class="name">' + this.name + '</h6><p>Created: ' + months[create_date.getMonth()] + '/' + create_date.getDate() + '/' + create_date.getFullYear() + '</p></div>');
+    $(".projects .project_list").append('<div class="project grid"><h6 class="name truncate">' + this.name + '</h6><p>Created: ' + months[create_date.getMonth()] + '/' + create_date.getDate() + '/' + create_date.getFullYear() + '</p></div>');
     $(".projects .project_list .project:last-child").append('<div class="icon"><i class="fas fa-archive"></i><i class="fas fa-thumbtack"></i></div>');
 
     if (this.status == 'archived') {
@@ -48,39 +50,34 @@ $(document).ready(function() {
 
     $(".project.bookmarked").insertAfter(".projects .project_list .input-field");
 
-      var option = '<option value="' + this.name + '">' + this.name + '</option>';
-      $(".add_log .project").append(option);
-      $("#report_modal #report_project").append(option);
+    var option = '<option value="' + this.name + '">' + this.name + '</option>';
+    $(".add_log .project").append(option);
+    $("#report_modal #report_project").append(option);
   });
 
   // Show/Hide Project Lists and Format
   $(".toggle").click(function(e) {
-    e.preventDefault();
-    $(".toggle").removeClass("active");
-    if ($(this).hasClass("toggle_active") == true) {
-      $(".toggle_active").addClass("active");
-      $(".project.archived").hide();
-      $(".project.active").show();
-    } else {
-      $(".toggle_archived").addClass("active");
-      $(".project.active").hide();
-      $(".project.archived").show();
-    }
-  });
+    $(this).toggleClass('active');
 
-  $(document).on("click", ".projects .display_list", function() {
-    $(".projects .project").removeClass("grid");
-  });
-  $(document).on("click", ".projects .display_blocks", function() {
-    if (!$(".projects .project").hasClass()) {
-      $(".projects .project").addClass("grid");
+    if ($(this).hasClass("archive_toggle")) {
+      $("#search_projects").val('');
+      $("label[for='search_projects']").removeClass('active');
+      if ($(this).hasClass('active')) {
+        $(".project.archived").show();
+        $(".project.active").hide();
+      } else {
+        $(".project.archived").hide();
+        $(".project.active").show();
+      }
+    } else if ($(this).hasClass("grid_toggle")) {
+      $(".projects .project").toggleClass("grid");
     }
   });
 
   // Search Projects
   $(".projects .search").keyup(function() {
     var d = $(this).val().toLowerCase();
-    var active_search = ($(".projects .toggle_active").hasClass("active")) ? true : false;
+    var archive_search = ($(".projects .archive_toggle").hasClass("active")) ? true : false;
 
     var filter_projects = function filter_projects() {
       var name = $(this).find(".name").text().toLowerCase();
@@ -91,9 +88,9 @@ $(document).ready(function() {
       }
     }
 
-    if (active_search == true) {
+    if (archive_search == false) {
       $(".projects .project.active").each(filter_projects);
-    } else if (active_search == false ) {
+    } else if (archive_search == true ) {
       $(".projects .project.archived").each(filter_projects);
     }
 
@@ -184,6 +181,9 @@ $(document).ready(function() {
 
     $(".view-container").removeClass("view_projects");
     $(".view-container").addClass("view_logs");
+    $('html, body').animate({
+      scrollTop: $(".logs").offset().top
+    }, 1000);
   });
 
   // Reverse Animation
@@ -203,7 +203,7 @@ $(document).ready(function() {
   });
 
   // Submit Log(s)
-  $(".add_log_container #submit").click(function() {
+  $(".add_log_container .submit").click(function() {
     var logs = [];
     $(".add_log").each(function(i) {
       var id = new Date().toJSON() + i;
@@ -234,7 +234,7 @@ $(document).ready(function() {
         }
         logs.push(log);
       } else {
-        M.toast({html: 'See Required Fields'});
+        M.toast({html: 'Fill Required Fields'});
       }
     });
     // If there are any logs to add
@@ -387,7 +387,7 @@ $(document).ready(function() {
               $lte: end_date
             },
           },
-          sort: [{'user_id': 'desc'}, {'project': 'desc'}, {'date': 'desc'}],
+          sort: [{'date': 'desc'}],
         });
       }).then(function(docs) {
         populate_logs(docs.docs);
@@ -437,6 +437,7 @@ $(document).ready(function() {
   $(document).on("click", ".view-charts", function() {
     var project = $(".logs .project_name").text();
     localStorage.setItem("project",project);
+    localStorage.setItem("company_db", company_db);
   });
 
   // Signout ===============================================================================================
