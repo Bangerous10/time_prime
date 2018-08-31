@@ -8,18 +8,22 @@
   $client->debug = false;
   $client->debug_http = true;
 
-  // Real
+  // Production
   // $client->redirect_uri = 'http://abange.lodgedesign.us/time_js/index.php';
   // $client->client_id = '4899c025e1e35dc1877db4987ddb08b82806e82a';
-  // $application_line = __LINE__;
   // $client->client_secret = '71fabd9ac919e33946014ee1d75fa9978121fc56';
 
   // Development
   $client->redirect_uri = 'http://localhost:8888/';
   $client->client_id = 'd0817166f8dd996eb948dc129e16bd15b26b0caf';
-  $application_line = __LINE__;
   $client->client_secret = '12ca77d505bb777a4eee9e5a3436436fb291a488';
 
+  if ($_GET['url']) {
+    $url = $_GET['url'];
+  }
+  if ($_GET['account_name']) {
+    $account_name = $_GET['account_name'];
+  }
 
 
   if(strlen($client->client_id) == 0
@@ -57,14 +61,25 @@
     exit;
   if($success)
   {
+    session_start();
     $user_id = $user->identity->id;
 
+    $accounts = array();
+
     foreach($user->accounts as $account) {
-      if($account->id=="3715639") {
-        $ACCOUNT_ID = $account->id;
+      array_push($accounts, $account);
+    }
+
+    if (!$url) {
+      if (count($accounts) > 1) {
+        $_SESSION['user'] = $user;
+        header('Location: ' . $client->redirect_uri . 'accounts.php');
+      //  header('Location: http://abange.lodgedesign.us/time_js/accounts.php');
+      } else {
+        $url = 'https://3.basecampapi.com/' . $accounts[0]->id;
+        $account_name = $accounts[0]->name;
       }
     }
-    $url = 'https://3.basecampapi.com/' . $ACCOUNT_ID;
 
   } else {
     echo "Success variable is not defined";

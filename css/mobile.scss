@@ -29,6 +29,12 @@
 // 600px or less
 @media #{$small-and-down} {
   .title {font-size:2rem;}
+  nav {
+    .nav-wrapper {
+      .links {
+      }
+    }
+  }
   main {
     .add_log_container.col {padding:1.5rem;}
     .view-container {
@@ -51,6 +57,7 @@
         .title {
           font-size:1.5rem;
           .right, .left {margin-top:0;}
+          .project_name {white-space: normal;}
         }
       }
     }

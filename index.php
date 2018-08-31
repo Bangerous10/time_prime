@@ -1,8 +1,7 @@
 <?php
-require('header.html');
 require('authorize.php');
+require('header.html');
 ?>
-<script src="js/functionality.js"></script>
 <script>
 <?php
 // Gather Basecamp Data ====================================================================================
@@ -12,12 +11,8 @@ for ($x = 1; $x <= 5; $x++) {
   $client->CallAPI(
     "{$url}/people.json?page=$x",
     'GET', array(), array('FailOnAccessError'=>true), $people);
-  foreach($people as $user) {
-    $email = explode("@", $user->email_address);
-    $email = strtolower($email[1]);
-    if ($email == "lodgedesign.com" || $email == "oneluckyguitar.com" || $email == "lodgemail.com") {
-      $users[$user->name] = $user;
-    }
+  foreach($people as $person) {
+    $users[$person->name] = $person;
   }
 }
 ksort($users);
@@ -54,27 +49,31 @@ for ($x = 1; $x <= 5; $x++) {
 ksort($projects);
 $projects = json_encode($projects);
 echo "var all_projects = " . $projects . ";";
+
+echo "var account_name = '" . $account_name . "';";
 ?>
 </script>
+<script src="js/functionality.js"></script>
 <body>
   <header></header>
-  <nav>
-    <div class="nav-wrapper max-width">
-      <div class="user_info">
-        <div class="user_image"></div>
-        <div>
-          <div class="user_name"></div>
-          <div class="user_company"></div>
+    <nav>
+      <div class="max-width">
+        <img class="logo hide-on-small-and-down" src="images/logo.svg" />
+        <img class="logo hide-on-med-and-up" src="images/logo_icon.svg" />
+        <div class="links">
+          <span class="user_image tooltipped hide-on-small-and-down"
+            data-position="bottom"
+            data-tooltip="<?php echo $user->identity->first_name . ' ' . $user->identity->last_name . '<br />' . $account_name; ?>">
+          </span>
+          <span><a href="#report_modal" class="modal-trigger">Report</a></span>
+          <?php
+            if (count($accounts) > 1) {
+              echo '<span><a href="accounts.php">Accounts</a></span>';
+            }
+          ?>
         </div>
       </div>
-      <div class="brand-logo"><a href="index.php"><img src="images/brand.png" alt="LODGE" style="width:275px;"/></a></div>
-      <ul>
-        <li><a href="#report_modal" class="modal-trigger">Create Report</a></li>
-        <li class="signout"><a href="#!">Sign Out</a></li>
-      </ul>
-    </div>
-  </nav>
-
+    </nav>
 <!-- UI Elements ======================================================================================= -->
   <main>
     <div class="row">
@@ -87,9 +86,7 @@ echo "var all_projects = " . $projects . ";";
           <div class="add_logs">
             <div class="add_log col s12">
               <div class="col s12 m1 center">
-                <button class="btn-flat waves-effect remove_row col s12">
-                  <i class="fas fa-trash"></i>
-                </button>
+                  <i class="fas fa-trash remove_row col s12"></i>
               </div>
               <div class="input-field col s12 m2">
                 <input type="text" class="datepicker" placeholder="Date*">
@@ -123,8 +120,8 @@ echo "var all_projects = " . $projects . ";";
         <div class="max-width">
           <h4 class="title">
             View Projects
-            <span class="right toggle archive_toggle"><i class="fas fa-archive"></i></span>
-            <span class="right toggle grid_toggle active"><i class="fas fa-th-large"></i></span>
+            <span class="right toggle archive_toggle tooltipped" data-tooltip="Archived"><i class="fas fa-archive"></i></span>
+            <span class="right toggle grid_toggle active tooltipped" data-tooltip="Grid View"><i class="fas fa-th-large"></i></span>
           </h4>
           <div class="project_list col s12">
             <div class="input-field col s12">
@@ -142,7 +139,7 @@ echo "var all_projects = " . $projects . ";";
               <i class="fas fa-arrow-left reverse"></i>
             </span>
             <span class="project_name">View Logs</span>
-              <a href="data_chart.php" class="view-charts right"><i class="fas fa-chart-pie"></i></a>
+              <a href="data_chart.php?url=<?php echo $url . '&account_name=' . $account_name ?>" class="view-charts right"><i class="fas fa-chart-pie"></i></a>
               <a download="logs.csv" class="csv right"><i class="fas fa-download"></i></a>
           </h4>
           <div class="project_logs">
@@ -163,7 +160,6 @@ echo "var all_projects = " . $projects . ";";
           </div>
         </div>
       </div>
-
     </div>
 
     <!-- Edit Modal -->

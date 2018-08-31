@@ -17,21 +17,72 @@ $(document).ready(function() {
       maxDate: new Date(),
     });
     $('select').formSelect();
+    $('.tooltipped').tooltip({
+      position: 'top',
+    });
+    $(".dropdown-trigger").dropdown();
   }
   initMaterialize();
 
-  var company_name = profile.company.name;
-  var company_id = profile.company.id;
+  var company_name = account_name;
   var company_db = company_name.replace(/[^A-Z0-9]+/ig, "_").toLowerCase();
   var months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
   var current_logs = [];
 
   var db = new PouchDB("https://e8f911a8-d248-4368-a746-cebad35bb583-bluemix:8ed78811bfba110ac8fe4a5f5bf339ca98291f864d695a2daee5b9f1da96fe83@e8f911a8-d248-4368-a746-cebad35bb583-bluemix.cloudant.com/" + company_db);
 
-  // Display User Info =====================================================================================
   $(".user_image").css("background-image", "url(" + profile.avatar_url + ")");
-  $(".user_name").html(profile.name);
-  $(".user_company").html(company_name);
+
+  // Reusable Functions ====================================================================================
+  // Scroll to Logs
+  function scroll_to_logs() {
+    $('html, body').animate({
+      scrollTop: ($(".logs").offset().top - 60)
+    }, 1000);
+  };
+
+  // Populate Logs
+  var populate_logs = function populate_logs(logs) {
+    current_logs = [];
+    var total_hours = 0;
+    if (logs.length > 0) {
+      $.each(logs, function(i) {
+        current_logs.push(this);
+
+        $(".logs table tbody").append('<tr data-id="' + this._id + '" data-rev="' + this._rev + '"></tr>');
+
+        var date = new Date(this.date);
+        var dateString = months[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear();
+
+        var row = $(".logs table tbody tr:last-child");
+        row.append('<td class="center"><i class="fas fa-pen-square edit_log"></i><i class="far fa-minus-square delete_log"></i></td>');
+        row.append('<td>' + dateString + '</td>');
+        row.append('<td>' + this.user_name + '</td>');
+        row.append('<td class="truncate" style="max-width:250px">' + this.project + '</td>');
+        row.append('<td>' + this.job_code + '</td>');
+        row.append('<td class="truncate" style="max-width:250px">' + this.description + '</td>');
+        row.append('<td style="text-align:right">' + this.hours + '</td>');
+        total_hours += parseFloat(this.hours);
+      });
+
+      $(".logs .total_hours").html(total_hours.toFixed(2));
+    } else {
+      $(".logs .total_hours").html("0");
+      $(".logs tbody").append('<tr><td colspan="7" class="center"><i>No Logs Found</i></td></tr>');
+    }
+
+    $(".view-container").css("min-height", $(".view-container .logs").outerHeight());
+  };
+
+  // Toggle View
+  function view_projects() {
+    $(".view-container").removeClass("view_logs");
+    $(".view-container").addClass("view_projects");
+  }
+  function view_logs() {
+    $(".view-container").removeClass("view_projects");
+    $(".view-container").addClass("view_logs");
+  }
 
   // Display & Populate Projects ===========================================================================
   $.each(all_projects, function(i) {
@@ -117,46 +168,14 @@ $(document).ready(function() {
   });
 
   // View a Project's Logs =================================================================================
-  var populate_logs = function populate_logs(logs) {
-    current_logs = [];
-    var total_hours = 0;
-    if (logs.length > 0) {
-      $.each(logs, function(i) {
-        current_logs.push(this);
-
-        $(".logs table tbody").append('<tr data-id="' + this._id + '" data-rev="' + this._rev + '"></tr>');
-
-        var date = new Date(this.date);
-        var dateString = months[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear();
-
-        var row = $(".logs table tbody tr:last-child");
-        row.append('<td class="center"><i class="fas fa-pen-square edit_log"></i><i class="far fa-minus-square delete_log"></i></td>');
-        row.append('<td>' + dateString + '</td>');
-        row.append('<td>' + this.user_name + '</td>');
-        row.append('<td>' + this.project + '</td>');
-        row.append('<td>' + this.job_code + '</td>');
-        row.append('<td class="truncate" style="max-width:300px">' + this.description + '</td>');
-        row.append('<td style="text-align:right">' + this.hours + '</td>');
-        total_hours += parseFloat(this.hours);
-      });
-
-      $(".logs .total_hours").html(total_hours.toFixed(2));
-    } else {
-      $(".logs .total_hours").html("0");
-      $(".logs tbody").append('<tr><td colspan="7" class="center"><i>No Logs Found</i></td></tr>');
-    }
-
-    $(".view-container").css("min-height", $(".view-container .logs").outerHeight());
-  };
-
   $(document).on("click", ".projects .project", function() {
     var project_name = $(this).find(".name").text();
     $(".logs .project_name").html(project_name);
     $(".logs table tbody").html('');
 
-    if ($(this).hasClass("active")) {
-      $(".add_log select.project option[value='" + project_name + "']").prop('selected', true);
-    }
+    // if ($(this).hasClass("active")) {
+    //   $(".add_log select.project option[value='" + project_name + "']").prop('selected', true);
+    // }
 
     db.createIndex({
       index: {
@@ -179,17 +198,13 @@ $(document).ready(function() {
       console.log(err);
     });
 
-    $(".view-container").removeClass("view_projects");
-    $(".view-container").addClass("view_logs");
-    $('html, body').animate({
-      scrollTop: $(".logs").offset().top
-    }, 1000);
+    view_logs();
+    scroll_to_logs();
   });
 
   // Reverse Animation
   $(document).on("click", ".logs .reverse", function() {
-    $(".view-container").removeClass("view_logs");
-    $(".view-container").addClass("view_projects");
+    view_projects();
   });
 
   // Add Rows and Logs =====================================================================================
@@ -212,13 +227,9 @@ $(document).ready(function() {
       var dateString = $(this).find(".datepicker").val();
       var date = new Date(dateString);
       var hours = $(this).find(".hours").val();
-      var job_code = $(this).find(".job_code").val();
+      var job_code = ($(this).find(".job_code").val() == null) ? job_code = '' : $(this).find(".job_code").val();
       var description = $(this).find(".description").val();
       var project = $(this).find(".project").val();
-
-      if (job_code == null) {
-        job_code = '';
-      }
 
       // If Required Fields are Filled
       if (user_id != '' && date != '' && hours != '' && project != '') {
@@ -268,7 +279,8 @@ $(document).ready(function() {
     var d = confirm("Are you sure you want to delete this log?");
     if (d) {
       db.remove(id, rev);
-      M.toast({html: 'Successfully Deleted!'});
+      $(this).parents('tr').remove();
+      M.toast({html: 'Delete Successful'});
     }
   });
 
@@ -314,13 +326,9 @@ $(document).ready(function() {
     var dateString = edit.find("#edit_date").val();
     var date = new Date(dateString);
     var hours = edit.find("#edit_hours").val();
-    var job_code = edit.find("#edit_job_code").val();
+    var job_code = (edit.find("#edit_job_code").val() == null) ? job_code = '' : edit.find("#edit_job_code").val();
     var description = edit.find("#edit_description").val();
     var project = edit.find("#edit_project").val();
-
-    if (job_code == null) {
-      job_code = '';
-    }
 
     // If Required Fields are Filled
     if (id != '' && rev !='' && user_id != '' && date != '' && hours != '' && project != '') {
@@ -396,12 +404,8 @@ $(document).ready(function() {
         console.log(err);
       });
 
-      $('html, body').animate({
-        scrollTop: $(".logs").offset().top
-      }, 1000);
-      if ($(".view-container").hasClass("view_projects")) {
-        $(".view-container").removeClass("view_projects").addClass("view_logs");
-      }
+      scroll_to_logs();
+      view_logs();
 
     } else {
       M.toast({html: 'Select Users & Projects'});
@@ -440,15 +444,24 @@ $(document).ready(function() {
     localStorage.setItem("company_db", company_db);
   });
 
-  // Signout ===============================================================================================
-  $(document).on("click", ".signout", function() {
-    $.get("sign_out.php")
-    .fail(function() {
-      alert("Sorry, we could not log you out");
-    })
-    .done(function() {
-      window.location.replace("index.php");
-    });
+  // Scroll Watch ==========================================================================================
+  $(document).on('scroll', function() {
+    if ($(window).scrollTop() > 0) {
+      $("nav").addClass("fixed");
+    } else {
+      $("nav").removeClass("fixed");
+    }
   });
+
+  // Signout ===============================================================================================
+  // $(document).on("click", ".signout", function() {
+  //   $.get("sign_out.php")
+  //   .fail(function() {
+  //     alert("Sorry, we could not log you out");
+  //   })
+  //   .done(function() {
+  //     window.location.replace("index.php");
+  //   });
+  // });
 
 });

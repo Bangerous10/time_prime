@@ -1,13 +1,13 @@
 <?php
-require('header.html');
 require('authorize.php');
+require('header.html');
 ?>
 <script src="js/chart_funtionality.js"></script>
 
 
 
 <div class="charts">
-  <a href="index.php" class="back">
+  <a href="index.php?url=<?php echo $url . '&account_name=' . $account_name ?>" class="back">
     <i class="fas fa-chevron-left"></i>
     <h3 class="title project"></h3>
   </a>

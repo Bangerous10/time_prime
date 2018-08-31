@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JS Time Tracker</title>
+  <link rel="shortcut icon" href="images/icon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/pouchdb-6.4.3.min.js"></script>
+  <script src="js/pouchdb.find.js"></script>
+  <script src="js/materialize/bin/materialize.min.js"></script>
+  <script src="js/anime.min.js"></script>
+  <script src="js/chart.bundle.min.js"></script>
+  <script src="js/job_codes.js"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js"
+    integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+"
+    crossorigin="anonymous">
+  </script>
+  <link type="text/css" rel="stylesheet" href="css/styles.css"  media="screen,projection"/>
+
+  <style>
+    .load-overlay div {
+      height:200px;
+      width:200px;
+      display:block;
+      position:absolute;
+      top:40%;
+      left:40%;
+    }
+    .load-overlay span {
+      background-color:transparent;
+      border: 4px solid transparent;
+      border-radius: 50%;
+      padding:12px;
+      height:100%;
+      display:block;
+      transform-origin:50% 50%;
+      border-bottom-color:black;
+      border-top-color:black;
+    }
+  </style>
+</head>
+<div class="load-overlay">
+  <div>
+    <span>
+      <span>
+        <span>
+          <span>
+            <span>
+              <span>
+              </span>
+            </span>
+          </span>
+        </span>
+      </span>
+    </span>
+  </div>
+</div>
+<script>
+var colors = [];
+for (i=0; i<5; i++) {
+  colors.push('hsl(' + anime.random(30, 300) + ', ' + anime.random(30, 60) + '%, ' + anime.random(30, 60) + '%)');
+}
+
+var dur = 4000;
+
+anime({
+  targets: '.load-overlay div',
+  rotate: '-360deg',
+  easing: 'easeInOutBack',
+  duration: 8000,
+  loop: true
+});
+
+anime({
+  targets: '.load-overlay span',
+  rotate: '360deg',
+  easing: 'easeInOutCirc',
+  duration: dur,
+  loop: true,
+});
+
+anime ({
+  targets: '.load-overlay span',
+  borderBottomColor: colors,
+  borderTopColor: colors,
+  easing: 'linear',
+  duration: dur * 2,
+  complete: function() {
+    $(".load-overlay").fadeOut();
+  }
+});
+
+
+</script>

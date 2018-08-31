@@ -48,6 +48,7 @@
 h1, h2, h3, h4, h5, h6, .title {font-family:'Bree Serif', sans-serif;line-height:115%;}
 .max-width {max-width:1200px;margin:0 auto;}
 .row {margin-bottom:0;}
+.material-tooltip {font-size:0.8rem;}
 $input-text: rgb(60, 60, 60);
 $gray: #f0f0f0;
 $box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
@@ -72,7 +73,7 @@ $box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12)
   left:0;
   height:100%;
   width:100%;
-  z-index:100;
+  z-index:101;
   background-color:$gray;
   & > div {
     height:100%;
@@ -80,96 +81,68 @@ $box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12)
     justify-content:center;
     align-items:center;
     svg {
-      height:150px;
-      width:150px;
-      position:absolute;
+      height:100px;
+      width:auto;
       overflow:visible;
-      &.bg {
-        transform: translateY(40px);
-        opacity:0;
-        polygon {
-          fill:$primary-color;
-        }
-      }
-      &.fg {
-        height:100px;
-        width:100px;
-        polygon {
-          fill:transparent;
-          stroke:white;
-          stroke-width:1px;
-        }
-      }
     }
   }
 }
 
 // Header / Nav ============================================================================================
 nav {
-  z-index:10;
-  width:100%;
-  top:0;
-  padding:1rem 0;
-  background-color:black;
+  position:fixed;
+  padding:0.5rem 1.5rem;
+  background-color:$gray;
   height:auto;
-  .nav-wrapper {
-    .user_info {
-      position:absolute;
-      top:0;
-      right:1rem;
-      & > div {display:inline-block;}
-      .user_image {
-        height:50px;
-        width:50px;
-        border-radius:50%;
-        background-position:center;
-        background-size:cover;
-        background-repeat:no-repeat;
-      }
-      .user_image, .user_name, .user_company {
-        font-size:0.9rem;
-        line-height:2rem;
-        vertical-align:text-bottom;
+  box-shadow:none;
+  z-index:100;
+  transition:0.3s ease;
+  .links {
+    float:right;
+    display: flex;
+    flex-flow: row wrap;
+    align-content: center;
+    align-items: center;
+    justify-content: space-between;
+    .user_image {
+      height:50px;
+      width:50px;
+      border-radius:50%;
+      background-position:center;
+      background-size:cover;
+      background-repeat:no-repeat;
+    }
+    span {
+      margin-left:2rem;
+      a {
+        font-size:0.8rem;
+        font-weight: bold;
+        color:$secondary-color;
+        text-transform: uppercase;
+        transition:0.3s ease;
+        &:hover {color:$primary-color;}
       }
     }
-    .brand-logo {position:relative;display:block;}
-    ul {
-      li {
-        text-transform:uppercase;
-        font-weight:900;
-        float:none;
-        display:inline-block;
-        a {
-          line-height:2rem;
-          margin:0 15px;
-          padding:0;
-          position:relative;
-          &:after {
-            content:'';
-            position:absolute;
-            width:0;
-            height:1px;
-            background-color:$primary-color;
-            bottom:0;
-            left:0;
-            transition:0.7s cubic-bezier(0.645, 0.045, 0.355, 1);
-          }
-          &:hover:after {width:100%;}
-        }
-      }
-    }
+  }
+  .logo {
+    width:auto;
+    height:64px;
+    display:inline-block;
+    vertical-align: middle;
+  }
+  &.fixed {
+    box-shadow:0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
   }
 }
 
 // Add Log =================================================================================================
 main {
+  padding-top:64px;
   .add_log_container.col {
     background-color:$gray;
     padding:3rem;
-    box-shadow:0 0 30px -10px rgb(50,50,50);
     .add_log {
       padding:0;
-      position:relative;
       .input-field { input, label, li span {font-size:0.8rem;}}
       select.browser-default {
         border-bottom:1px solid #9e9e9e;
@@ -182,12 +155,13 @@ main {
       input:-ms-input-placeholder {color:$input-text;}
       input::-ms-input-placeholder {color:$input-text;}
       .remove_row {
-        background-color:$gray;
-        color:$primary-color;
-        margin:1.5rem auto 0 auto;
+        color:$secondary-color;
+        height:1rem;
+        margin:2.5rem auto 0 auto;
         font-weight:900;
+        cursor:pointer;
         transition:0.3s ease;
-        &:hover {background-color:white;}
+        &:hover {color:$primary-color;}
       }
     }
     .add_row, .submit {
@@ -218,7 +192,6 @@ main {
           display:flex;
           align-items:center;
           align-content:center;
-          border-radius:50%;
           padding:8px;
           margin:0 0.5rem;
           color:$primary-color;

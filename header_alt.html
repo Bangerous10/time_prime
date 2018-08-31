@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JS Time Tracker</title>
+  <link rel="shortcut icon" href="images/icon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/pouchdb-6.4.3.min.js"></script>
+  <script src="js/pouchdb.find.js"></script>
+  <script src="js/materialize/bin/materialize.min.js"></script>
+  <script src="js/anime.min.js"></script>
+  <script src="js/chart.bundle.min.js"></script>
+  <script src="js/job_codes.js"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js"
+    integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+"
+    crossorigin="anonymous">
+  </script>
+  <link type="text/css" rel="stylesheet" href="css/styles.css"  media="screen,projection"/>
+</head>
+<div class="load-overlay">
+  <div>
+    <svg viewBox="0 0 400 400" style="enable-background:new 0 0 400 400;" xml:space="preserve">
+      <style>
+        rect {transform-origin:50% 50%;}
+        .border {
+          fill: transparent;
+          stroke: green;
+          stroke-width: 1px;
+        }
+        .fill {fill: green;}
+        .text {
+          font:900 1.5rem 'Open Sans';
+          fill:#f0f0f0;
+        }
+      </style>
+      <rect class="border" width="400" height="50" x="0" y="175" />
+      <rect class="fill" width="0" height="50" x="0" y="175" />
+      <text class="text" x="55" y="208">Loading Basecamp Data . . . </text>
+      </svg>
+  </div>
+</div>
+<script>
+var colors = [];
+for (i=0; i<5; i++) {
+  colors.push('hsl(' + anime.random(30, 300) + ', ' + anime.random(30, 60) + '%, ' + anime.random(30, 60) + '%)');
+}
+
+var width = 400;
+var dur = 3000;
+
+anime({
+  targets: 'svg .border',
+  stroke: colors,
+  easing: 'linear',
+  duration:10000,
+});
+anime({
+  targets: 'svg .fill',
+  fill: colors,
+  easing: 'linear',
+  duration:10000,
+});
+
+anime.timeline().add({
+  targets: 'svg rect, svg text',
+  opacity: [0, 1],
+  translateY: [-100, 0],
+  elasticity: 300,
+  duration: 1000,
+})
+.add({
+  targets: 'svg .fill',
+  width: [0, width],
+  easing: 'easeInOutCubic',
+  duration: dur,
+})
+.add({
+  targets: 'svg rect',
+  height:1,
+  y: 200,
+  easing: 'easeOutQuart',
+  duration: 800,
+  offset: (dur + 1000)
+})
+.add({
+  targets: 'svg text',
+  opacity: 0,
+  duration: 500,
+  easing: 'linear',
+  offset: (dur + 1000)
+})
+.add({
+  targets: 'svg rect',
+  x: (width / 2),
+  width: 0,
+  easing: [0.6, -0.28, 0, 1],
+  duration: 500,
+})
+.add({
+  targets: '.load-overlay',
+  opacity: 0,
+  easing: 'linear',
+  duration: 500,
+  offset: '+=1000',
+  complete: function(anim) {
+    $(".load-overlay").hide()
+  }
+});
+</script>

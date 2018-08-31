@@ -42,8 +42,11 @@ $(document).ready(function() {
 
     // Generate Random Colors
     for(i=0; i<Object.keys(users).length; i++) {
-      colors.push('#'+ ('000000' + Math.floor(Math.random()*16777215).toString(16)).slice(-6));
+      colors.push('hsl(4, 72%, ' + (Math.random() * (100 - 1) + 0) + '%)');
+    //  colors.push('#'+ ('000000' + Math.floor(Math.random()*16777215).toString(16)).slice(-6));
     }
+
+
 
     // Sum Total Hours
     var total_hours = Object.values(users).reduce(function(acc, val) { return acc + val; });
