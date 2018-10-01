@@ -164,13 +164,13 @@ main {
         &:hover {color:$primary-color;}
       }
     }
-    .add_row, .submit {
+    .add_row, .submit, .timer {
       color:white;
       background-color:$primary-color;
       font-size:0.8rem;
       font-weight:900;
     }
-    .add_row {margin-right:1rem;}
+    .add_row {margin:0 1rem;}
   }
 
   // Projects List =========================================================================================
@@ -393,6 +393,94 @@ main {
     }
   }
 }
+
+// Timer ===================================================================================================
+main.timer {
+  position:relative;
+  padding:1rem 0;
+  max-width:350px;
+  margin:0 auto;
+  a {
+    position:absolute;
+    top:0;
+    left:0.5rem;
+    font-weight:bold;
+    font-size:0.8rem;
+    &.pause_timer, &.resume_timer {left:unset;right:0.5rem;display:none;}
+  }
+  .count {
+    position:relative;
+    margin:0 0.75rem;
+    display:flex;
+    flex-flow:row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    .start_timer {color:$success-color;&:hover {color:darken($success-color, 15%);}}
+    .done_timer {display:none;}
+    .stop_timer {color:$error-color;display:none;&:hover {color:darken($error-color, 15%);}}
+    .start_timer, .stop_timer, .done_timer {
+      cursor:pointer;
+      transition:0.3s ease;
+      font-size:3rem;
+      vertical-align:middle;
+      margin:0.5rem;
+    }
+    .start, .end {
+        font:900 2rem 'Open Sans';
+        vertical-align: middle;
+    }
+    .counter {
+      position:absolute;
+      bottom:0;
+      left:0;
+      height:2px;
+      width:0;
+      background-color:$primary-color;
+    }
+    &::after {
+      content:'';
+      position:absolute;
+      bottom:0;
+      left:0;
+      width:100%;
+      height:2px;
+      background-color:rgba($secondary-color, 0.1);
+    }
+  }
+  .submission {
+    display:none;
+    text-align:left;
+    .timer_log {
+      .input-field, input, textarea {
+        margin:0;
+        font-size:0.8rem;
+      }
+      select {
+        background-color:$gray;
+        border-radius:0;
+        border:0;
+        border-bottom:1px solid #9e9e9e;
+        outline:none;
+        padding:0;
+        cursor:pointer;
+      }
+    }
+    .reset_timer, .submit_timer {
+      margin:0.5rem 0.25rem 0 0.25rem;
+      padding:0.5rem;
+      height:auto;
+      color:white;
+      line-height:0.7rem;
+      font-size:0.7rem;
+      font-weight:900;
+      letter-spacing:1px;
+      border-radius:0;
+      float:right;
+      background-color:$primary-color;
+    }
+  }
+}
+.hiddendiv {width:auto !important;}
 
 // Footer ==================================================================================================
 footer.page-footer {

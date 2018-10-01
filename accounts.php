@@ -1,7 +1,10 @@
 <?php
-// $user = json_decode($_GET['user']);
 session_start();
 $user = $_SESSION['user'];
+if (!$user) {
+  require('authroize.php');
+}
+
 ?>
 <title>Time Prime</title>
 <link rel="shortcut icon" href="images/logo_icon.svg" />
@@ -81,7 +84,7 @@ $user = $_SESSION['user'];
   <div><?php echo $user->identity->first_name . ' ' . $user->identity->last_name; ?></div>
   <div><?php echo $user->identity->email_address; ?></div>
 </div>
-<p style="font-size:0.8rem;color:rgb(200,200,200);">Choose an account for which to track your time.</p>
+<p style="font-size:0.8rem;color:rgb(200,200,200);">Choose an account to track your time.</p>
 <div class="account-container">
   <div class="title">Basecamp</div>
   <?php

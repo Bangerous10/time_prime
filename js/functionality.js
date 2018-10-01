@@ -24,8 +24,7 @@ $(document).ready(function() {
   }
   initMaterialize();
 
-  var company_name = account_name;
-  var company_db = company_name.replace(/[^A-Z0-9]+/ig, "_").toLowerCase();
+  var company_db = account_name.replace(/[^A-Z0-9]+/ig, "_").toLowerCase();
   var months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
   var current_logs = [];
 
@@ -437,11 +436,17 @@ $(document).ready(function() {
 
   });
 
-  // Store Data for Charts =================================================================================
-  $(document).on("click", ".view-charts", function() {
+  // Store Data for Charts & Timer =================================================================================
+  var store_data = function store_data() {
     var project = $(".logs .project_name").text();
     localStorage.setItem("project",project);
     localStorage.setItem("company_db", company_db);
+  }
+  $(document).on("click", ".view-charts", store_data);
+  $(document).on("click", ".add_log_container .timer", function() {
+    var href = 'timer.php?url=' + url + '&account_name=' + account_name;
+    store_data();
+    window.open(href, 'timer', 'height=400,width=400');
   });
 
   // Scroll Watch ==========================================================================================

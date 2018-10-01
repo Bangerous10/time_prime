@@ -1,6 +1,7 @@
 <?php
 require('authorize.php');
 require('header.html');
+require('intro_anim.html');
 ?>
 <script>
 <?php
@@ -50,6 +51,7 @@ ksort($projects);
 $projects = json_encode($projects);
 echo "var all_projects = " . $projects . ";";
 
+echo "var url = '" . $url . "';";
 echo "var account_name = '" . $account_name . "';";
 ?>
 </script>
@@ -111,6 +113,7 @@ echo "var account_name = '" . $account_name . "';";
           </div>
           <button class="btn-flat waves-effect waves-light right submit"><i class="fas fa-check"></i> Submit</button>
           <button class="btn-flat waves-effect waves-light right add_row"><i class="fas fa-plus"></i> Add Row</button>
+          <button class="btn-flat waves-effect waves-light right timer"><i class="fas fa-stopwatch"></i> Timer</button>
         </div>
       </div>
     </div>
