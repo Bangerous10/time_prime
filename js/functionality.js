@@ -20,7 +20,6 @@ $(document).ready(function() {
     $('.tooltipped').tooltip({
       position: 'top',
     });
-    $(".dropdown-trigger").dropdown();
   }
   initMaterialize();
 
@@ -29,10 +28,15 @@ $(document).ready(function() {
   var current_logs = [];
 
   var db = new PouchDB("https://e8f911a8-d248-4368-a746-cebad35bb583-bluemix:8ed78811bfba110ac8fe4a5f5bf339ca98291f864d695a2daee5b9f1da96fe83@e8f911a8-d248-4368-a746-cebad35bb583-bluemix.cloudant.com/" + company_db);
-
   $(".user_image").css("background-image", "url(" + profile.avatar_url + ")");
 
   // Reusable Functions ====================================================================================
+  // Create Project ID/Name Reference
+  var project_ref = [];
+  $.each(all_projects, function(key, val) {
+    project_ref[this.id] = this.name;
+  });
+
   // Scroll to Logs
   function scroll_to_logs() {
     $('html, body').animate({
@@ -55,9 +59,10 @@ $(document).ready(function() {
 
         var row = $(".logs table tbody tr:last-child");
         row.append('<td class="center"><i class="fas fa-pen-square edit_log"></i><i class="far fa-minus-square delete_log"></i></td>');
+        row.append('<input type="hidden" class="project_id" value="' + this.project_id + '" />');
         row.append('<td>' + dateString + '</td>');
         row.append('<td>' + this.user_name + '</td>');
-        row.append('<td class="truncate" style="max-width:250px">' + this.project + '</td>');
+        row.append('<td class="truncate project_name" style="max-width:250px">' + project_ref[this.project_id] + '</td>');
         row.append('<td>' + this.job_code + '</td>');
         row.append('<td class="truncate" style="max-width:250px">' + this.description + '</td>');
         row.append('<td style="text-align:right">' + this.hours + '</td>');
@@ -88,6 +93,7 @@ $(document).ready(function() {
     all_projects[i].name = all_projects[i].name.replace(/['"]+/g, '');
     var create_date = new Date(this.created_at);
     $(".projects .project_list").append('<div class="project grid"><h6 class="name truncate">' + this.name + '</h6><p>Created: ' + months[create_date.getMonth()] + '/' + create_date.getDate() + '/' + create_date.getFullYear() + '</p></div>');
+    $(".projects .project_list .project:last-child").append('<input class="project_id" type="hidden" value="' + this.id + '" />');
     $(".projects .project_list .project:last-child").append('<div class="icon"><i class="fas fa-archive"></i><i class="fas fa-thumbtack"></i></div>');
 
     if (this.status == 'archived') {
@@ -100,9 +106,15 @@ $(document).ready(function() {
 
     $(".project.bookmarked").insertAfter(".projects .project_list .input-field");
 
-    var option = '<option value="' + this.name + '">' + this.name + '</option>';
-    $(".add_log .project").append(option);
-    $("#report_modal #report_project").append(option);
+    var option = '<option value="' + this.id + '">' + this.name + '</option>';
+    if (this.bookmarked == true && this.status == 'active') {
+      $(".add_log .project").prepend(option);
+      $("#report_modal #report_project").prepend(option);
+    } else {
+      $(".add_log .project").append(option);
+      $("#report_modal #report_project").append(option);
+    }
+
   });
 
   // Show/Hide Project Lists and Format
@@ -169,30 +181,26 @@ $(document).ready(function() {
   // View a Project's Logs =================================================================================
   $(document).on("click", ".projects .project", function() {
     var project_name = $(this).find(".name").text();
+    var project_id = parseInt($(this).find(".project_id").val());
     $(".logs .project_name").html(project_name);
     $(".logs table tbody").html('');
 
-    // if ($(this).hasClass("active")) {
-    //   $(".add_log select.project option[value='" + project_name + "']").prop('selected', true);
-    // }
-
     db.createIndex({
       index: {
-        fields: ['date', 'project'],
+        fields: ['date', 'project_id'],
         name: 'single_project_index',
         ddoc: 'single_project_index'
       }
     }).then(function (result) {
       return db.find({
         selector: {
-          project: project_name,
+          project_id: project_id,
           date: {$gt: null},
         },
         sort: [{date: 'desc'}],
       })
     }).then(function(docs) {
       populate_logs(docs.docs);
-      $(".view-charts").show();
     }).catch(function (err) {
       console.log(err);
     });
@@ -228,10 +236,11 @@ $(document).ready(function() {
       var hours = $(this).find(".hours").val();
       var job_code = ($(this).find(".job_code").val() == null) ? job_code = '' : $(this).find(".job_code").val();
       var description = $(this).find(".description").val();
-      var project = $(this).find(".project").val();
+      var project_id = parseInt($(this).find(".project").val());
+      var project_name = $(this).find(".project option:selected").text();
 
       // If Required Fields are Filled
-      if (user_id != '' && date != '' && hours != '' && project != '') {
+      if (user_id && date && hours && project_id && hours > 0) {
         var log = {
           '_id': id,
           'user_id': user_id,
@@ -240,7 +249,8 @@ $(document).ready(function() {
           'hours': hours,
           'job_code': job_code,
           'description': description,
-          'project': project
+          'project_id': project_id,
+          'project_name': project_name
         }
         logs.push(log);
       } else {
@@ -287,9 +297,9 @@ $(document).ready(function() {
   $(document).on("click", ".project_logs .edit_log", function() {
     var id = $(this).parents("tr").attr("data-id");
     var rev = $(this).parents("tr").attr("data-rev");
-    var project = $(this).parents(".logs").find(".project_name").text();
+    var project_id = $(this).parents(".tr").find(".project_id").val();
 
-    $("#edit_modal .project_name").text(project);
+    $("#edit_modal .project_name").text(project_ref[project_id]);
     $("#edit_modal").modal('open');
 
     db.get(id).then(function (doc) {
@@ -305,7 +315,8 @@ $(document).ready(function() {
         defaultDate: new Date(doc.date),
         setDefaultDate: true
       });
-      $("#edit_modal #edit_project").val(doc.project); // Must get Project from doc
+      $("#edit_modal #edit_project_id").val(doc.project_id); // Must get Project from doc
+      $("#edit_modal .project_name").val(project_ref[doc.project_id]);
       $("#edit_modal #edit_job_code").val(doc.job_code);
       $("#edit_modal #edit_description").val(doc.description);
       $("#edit_modal #edit_hours").val(doc.hours);
@@ -327,10 +338,11 @@ $(document).ready(function() {
     var hours = edit.find("#edit_hours").val();
     var job_code = (edit.find("#edit_job_code").val() == null) ? job_code = '' : edit.find("#edit_job_code").val();
     var description = edit.find("#edit_description").val();
-    var project = edit.find("#edit_project").val();
+    var project_id = parseInt(edit.find("#edit_project_id").val());
+    var project_name = project_ref[project_id];
 
     // If Required Fields are Filled
-    if (id != '' && rev !='' && user_id != '' && date != '' && hours != '' && project != '') {
+    if (id && rev && user_id && date && hours && project_id) {
       var log = {
         '_id': id,
         '_rev': rev,
@@ -340,11 +352,14 @@ $(document).ready(function() {
         'hours': hours,
         'job_code': job_code,
         'description': description,
-        'project': project
+        'project_id': project_id,
+        'project_name': project_name
       }
+      console.log(log);
 
       db.put(log).then(function() {
         M.toast({html: 'Successfully Updated!'});
+        view_projects();
         $(".logs .project_logs tbody").html('');
       })
       .catch(function (err) {
@@ -363,10 +378,10 @@ $(document).ready(function() {
 
     if (report.find("#report_project").val() == 'all') {
       $.each(all_projects, function(i) {
-        projects.push(this.name);
+        projects.push(this.id);
       });
     } else {
-      projects = report.find("#report_project").val();
+      projects = $.map(report.find("#report_project").val(),Number);
     }
 
     var start_date = (report.find("#report_start_date").val() != '') ? new Date(report.find("#report_start_date").val()).toISOString() : null;
@@ -375,12 +390,13 @@ $(document).ready(function() {
     // If Users and Projects are chosen
     if (users.length > 0 && projects.length > 0) {
 
+      $(".logs .project_name").text('Project Report');
       $(".logs table tbody").html('');
       var total_hours = 0;
 
       db.createIndex({
         index: {
-          fields: ['user_id', 'project', 'date'],
+          fields: ['user_id', 'project_id', 'date'],
           name: 'report_index',
           ddoc: 'report_index'
         }
@@ -388,17 +404,18 @@ $(document).ready(function() {
         return db.find({
           selector: {
             user_id: {$or: users},
-            project: {$or: projects},
+            project_id: {$or: projects},
             date: {
               $gte: start_date,
               $lte: end_date
             },
           },
-          sort: [{'date': 'desc'}],
+         sort: [{date: 'desc'}],
         });
       }).then(function(docs) {
+        console.log(docs);
+        console.log(users);
         populate_logs(docs.docs);
-        $(".view-charts").hide();
       }).catch(function (err) {
         console.log(err);
       });
@@ -424,7 +441,7 @@ $(document).ready(function() {
         var date_long = new Date(this.date);
         var date = (date_long.getMonth()+1) + "/" + date_long.getDate() + "/" + date_long.getFullYear();
 
-        csv_line = date + "," + this.user_name + "," + this.project + "," + job_code + "," + description + "," + this.hours;
+        csv_line = date + "," + this.user_name + "," + project_ref[this.project_id] + "," + job_code + "," + description + "," + this.hours;
         csv_string += csv_line + "\n";
       });
 
@@ -436,13 +453,10 @@ $(document).ready(function() {
 
   });
 
-  // Store Data for Charts & Timer =================================================================================
+  // Store Data for Timer =================================================================================
   var store_data = function store_data() {
-    var project = $(".logs .project_name").text();
-    localStorage.setItem("project",project);
     localStorage.setItem("company_db", company_db);
   }
-  $(document).on("click", ".view-charts", store_data);
   $(document).on("click", ".add_log_container .timer", function() {
     var href = 'timer.php?url=' + url + '&account_name=' + account_name;
     store_data();
@@ -468,5 +482,58 @@ $(document).ready(function() {
   //     window.location.replace("index.php");
   //   });
   // });
+
+  // Download all logs as CSV ==============================================================================
+  // db.allDocs({
+  //   include_docs: true
+  // }).then(function(doc) {
+  //   var csv_string = "data:text/csv;charset=utf-8, \nDate,User Name,Project,Job Code,Description,Hours\n";
+  //   $.each(doc.rows, function(i) {
+  //     console.log(this.doc);
+  //     var job_code = (this.doc.job_code != '' && this.doc.job_code != null) ? this.doc.job_code : ' ';
+  //     var description = (this.doc.description != '' && this.doc.description != null) ? this.doc.description.toString() : ' ';
+  //     description = description.replace(/[, ]+/g, " ").trim();
+  //     var date_long = new Date(this.doc.date);
+  //     var date = (date_long.getMonth()+1) + "/" + date_long.getDate() + "/" + date_long.getFullYear();
+  //
+  //     csv_line = date + "," + this.doc.user_name + "," + this.doc.project_name + "," + job_code + "," + description + "," + this.doc.hours;
+  //     csv_string += csv_line + "\n";
+  //
+  //   });
+  //
+  //   var encodedCSV = encodeURI(csv_string);
+  //   window.open(encodedCSV);
+  // });
+
+  // Add Project ID's to all logs ==========================================================================
+  // var test_db = new PouchDB("https://e8f911a8-d248-4368-a746-cebad35bb583-bluemix:8ed78811bfba110ac8fe4a5f5bf339ca98291f864d695a2daee5b9f1da96fe83@e8f911a8-d248-4368-a746-cebad35bb583-bluemix.cloudant.com/test_logs");
+  // var all_logs = [];
+  // var new_logs = [];
+  // test_db.allDocs({
+  //   include_docs: true
+  // }).then(function(doc) {
+  //   $.each(doc.rows, function(i) {
+  //     all_logs.push(this.doc);
+  //   });
+  //
+  //   $.each(all_logs, function(i, val) {
+  //     if (!this.project_id) {
+  //     //  this.project_name = this.project_name.trim();
+  //       this.project_id = project_ref[this.project_name];
+  //       if (this.project_id != undefined && this.project_id != null) {
+  //         new_logs.push(this);
+  //       }
+  //     //  console.log(this.project_id);
+  //     }
+  //   });
+  //   console.log(all_logs);
+  //   console.log(new_logs);
+  //
+  //   test_db.bulkDocs(new_logs).then(function(data) {
+  //     console.log(data);
+  //   });
+  //
+  // });
+
 
 });

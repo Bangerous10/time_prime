@@ -11,6 +11,21 @@ $(document).ready(function() {
   var company_db = account_name.replace(/[^A-Z0-9]+/ig, "_").toLowerCase();
   var db = new PouchDB("https://e8f911a8-d248-4368-a746-cebad35bb583-bluemix:8ed78811bfba110ac8fe4a5f5bf339ca98291f864d695a2daee5b9f1da96fe83@e8f911a8-d248-4368-a746-cebad35bb583-bluemix.cloudant.com/" + company_db);
 
+  var anim = anime({
+    targets: '.count .counter',
+    width: [
+      {value: '25%', easing:'easeInCubic'},
+      {value: '0%', easing: 'easeOutCubic'},
+    ],
+    left: [
+      {value: '75%', easing: 'easeInCubic'},
+      {value: '100%', easing:'easeOutCubic'},
+    ],
+    duration: 2000,
+    loop: true,
+    autoplay:false
+  });
+
   // Populate Job Codes
   $.each(job_codes, function() {
     var group = '<optgroup label="' + this.first_code + ' - ' + this.title + '">';
@@ -25,24 +40,8 @@ $(document).ready(function() {
 
   // Populate Projects
   $.each(all_projects, function() {
-    var option = '<option value="' + this.name + '">' + this.name + '</option>';
+    var option = '<option value="' + this.id + '">' + this.name + '</option>';
     $(".timer_log .project").append(option);
-  });
-
-
-  var anim = anime({
-    targets: '.count .counter',
-    width: [
-      {value: '25%', easing:'easeInCubic'},
-      {value: '0%', easing: 'easeOutCubic'},
-    ],
-    left: [
-      {value: '75%', easing: 'easeInCubic'},
-      {value: '100%', easing:'easeOutCubic'},
-    ],
-    duration: 2000,
-    loop: true,
-    autoplay:false
   });
 
   // Start Timer
@@ -158,9 +157,10 @@ $(document).ready(function() {
     var hours = $(".timer_log .hours").val();
     var job_code = ($(".timer_log .job_code").val() == null) ? job_code = '' : $(".timer_log .job_code").val();
     var description = $(".timer_log .description").val();
-    var project = $(".timer_log .project").val();
+    var project_id = parseInt($(".timer_log .project").val());
+    var project_name = $(".timer_log .project option:selected").text();
 
-    if (hours > 0 && project) {
+    if (hours > 0 && project_id && user_id) {
       var log = {
         '_id': id,
         'user_id': user_id,
@@ -169,12 +169,13 @@ $(document).ready(function() {
         'hours': hours,
         'job_code': job_code,
         'description': description,
-        'project': project
+        'project_id': project_id,
+        'project_name': project_name
       }
       db.put(log);
       reset_timer("Are you sure you'd like to submit this log?");
     } else {
-      M.toast({html: 'No Hours'});
+      M.toast({html: 'See Required Fields'});
     }
   });
 

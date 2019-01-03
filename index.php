@@ -29,7 +29,7 @@ echo "var profile = " . $profile . ";";
 
 $projects = array();
 // Get All Projects
-for ($x = 1; $x <= 5; $x++) {
+for ($x = 1; $x <= 10; $x++) {
   $client->CallAPI(
     "{$url}/projects.json?page=$x",
     'GET', array(), array('FailOnAccessError'=>true), $active_project);
@@ -38,7 +38,7 @@ for ($x = 1; $x <= 5; $x++) {
   }
 }
 
-for ($x = 1; $x <= 5; $x++) {
+for ($x = 1; $x <= 10; $x++) {
   $client->CallAPI(
     "{$url}/projects.json?status=archived&page=$x",
     'GET', array(), array('FailOnAccessError'=>true), $archived_project);
@@ -95,7 +95,7 @@ echo "var account_name = '" . $account_name . "';";
               </div>
               <div class="input-field col s12 m3">
                 <select class="project browser-default">
-                  <option value="" disabled selected>Project Name*</option>
+                  <option disabled selected>Project Name*</option>
                 </select>
               </div>
               <div class="input-field col s12 m2">
@@ -142,7 +142,6 @@ echo "var account_name = '" . $account_name . "';";
               <i class="fas fa-arrow-left reverse"></i>
             </span>
             <span class="project_name">View Logs</span>
-              <a href="data_chart.php?url=<?php echo $url . '&account_name=' . $account_name ?>" class="view-charts right"><i class="fas fa-chart-pie"></i></a>
               <a download="logs.csv" class="csv right"><i class="fas fa-download"></i></a>
           </h4>
           <div class="project_logs">
@@ -189,8 +188,9 @@ echo "var account_name = '" . $account_name . "';";
         </div>
         <div class="row">
           <div class="input-field col s12">
-            <input disabled id="edit_project" type="text">
-            <label for="edit_project">Project</label>
+            <input type="hidden" id="edit_project_id" />
+            <input disabled class="project_name" type="text">
+            <label for="edit_project">Project*</label>
           </div>
         </div>
         <div class="row">

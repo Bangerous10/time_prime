@@ -7438,49 +7438,11 @@ main .view-container.view_projects .projects, main .view-container.view_projects
 .modal#report_modal .input-field small {
   color: #9e9e9e;
 }
-
-.charts .back {
-  position: fixed;
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-.charts .back .fa-chevron-left {
-  color: #EE3524;
-  opacity: 0;
-  transition: 0.3s ease;
-  vertical-align: middle;
-}
-.charts .back .title {
-  font-size: 1.5rem;
-  display: inline-block;
-  margin: 0;
-  padding-left: 0.5rem;
-}
-.charts .back:hover {
-  padding-left: 1rem;
-}
-.charts .back:hover .fa-chevron-left {
-  opacity: 1;
-}
-.charts > .row:nth-child(even) {
-  background-color: #f0f0f0;
-  box-shadow: 0 0 30px -10px #323232;
-}
-.charts .charts_row_container {
-  padding: 5rem 3rem;
-  max-height: 800px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  align-content: center;
-}
-.charts .charts_row_container .info {
-  text-align: left;
-}
-.charts .charts_row_container .info .project, .charts .charts_row_container .info .total_hours {
-  color: #EE3524;
-  font-weight: 900;
+.modal#edit_modal #edit_job_code {
+  font-size: 16px;
+  outline: none;
+  padding: 0;
+  border: 0;
 }
 
 main.timer {
