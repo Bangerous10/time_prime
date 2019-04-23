@@ -431,7 +431,8 @@ $(document).ready(function() {
 
   // CSV Downlaod ==========================================================================================
   $(document).on("click", ".csv", function() {
-    var csv_string = "data:text/csv;charset=utf-8, \nDate,User Name,Project,Job Code,Description,Hours\n";
+    var csv_header = "data:text/csv;charset=utf-8, \nDate,User Name,Project,Job Code,Description,Hours\n";
+    var csv_string = '';
 
     if (current_logs.length > 0) {
       $.each(current_logs, function(i) {
@@ -445,8 +446,8 @@ $(document).ready(function() {
         csv_string += csv_line + "\n";
       });
 
-      var encodedCSV = encodeURI(csv_string);
-      $(this).attr("href", encodedCSV);
+      var encodedCSV = encodeURIComponent(csv_string);
+      $(this).attr("href", csv_header + encodedCSV);
     } else {
       M.toast({html: 'No Logs Found'});
     }
@@ -487,9 +488,9 @@ $(document).ready(function() {
   // db.allDocs({
   //   include_docs: true
   // }).then(function(doc) {
-  //   var csv_string = "data:text/csv;charset=utf-8, \nDate,User Name,Project,Job Code,Description,Hours\n";
+  //   var csv_header = "data:text/csv;charset=utf-8, \nDate,User Name,Project,Job Code,Description,Hours\n";
+  //   var csv_string = '';
   //   $.each(doc.rows, function(i) {
-  //     console.log(this.doc);
   //     var job_code = (this.doc.job_code != '' && this.doc.job_code != null) ? this.doc.job_code : ' ';
   //     var description = (this.doc.description != '' && this.doc.description != null) ? this.doc.description.toString() : ' ';
   //     description = description.replace(/[, ]+/g, " ").trim();
@@ -501,8 +502,8 @@ $(document).ready(function() {
   //
   //   });
   //
-  //   var encodedCSV = encodeURI(csv_string);
-  //   window.open(encodedCSV);
+  //   var encodedCSV = encodeURIComponent(csv_string);
+  //   window.open(csv_header + encodedCSV);
   // });
 
   // Add Project ID's to all logs ==========================================================================
